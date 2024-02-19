@@ -6,12 +6,16 @@ import { io } from "socket.io-client";
 import Games from "./components/QuizPage/QuizPage";
 import Head from "next/head";
 import { MainPage } from "./components/MainPage/MainPage";
+import Footer from "./components/Footer/Footer";
+import { User } from "firebase/auth";
+import LoginPage from "./components/LoginPage/LoginPage";
 
 let socket: any;
 
 export default function Home() {
 
   const [isLogged, setIsLogged] = useState(false)
+  const [user, setUser] = useState<User | null>(null)
 
   function connect(){
     socket = io("http://localhost:3001");
@@ -24,6 +28,10 @@ export default function Home() {
     });
   }
 
+  function updateUser(user : User | null){
+    setUser(user);
+  }
+
   function sendMessage(){
     socket.emit("Hello", "message")
   }
@@ -32,23 +40,12 @@ export default function Home() {
       <div>
    
         <Navbar />
-        
+
         {
-
-          /*
-        <button onClick={connect}>DOLACZ</button>
-
-          isLogged ? 
-            <div>
-              <div>WE are in game</div>
-              <button onClick={sendMessage}></button>
-            </div>
-          :
-          null
-          */
+          user ? <MainPage /> : <LoginPage updateUser={updateUser} />
         }
-        
-        <MainPage />
+
+        <Footer />
 
       </div>
   );

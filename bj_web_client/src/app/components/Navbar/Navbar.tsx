@@ -8,15 +8,7 @@ import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 
 export default function Navbar(){
 
-  const [user, setUser] = useState<null | User >(null)
 
-  useState(() => {
-    const unsubscribe = onAuthStateChangedHelper((user) => {
-        setUser(user);
-    })
-    
-    return () => unsubscribe()
-  })
 
 
     return(
@@ -25,13 +17,7 @@ export default function Navbar(){
           GAMES
         </div>
         
-        {
-        user  ?
-            <button onClick={ signOutUser }>Sign out</button>
 
-            :  
-            <button onClick={ signInWithGoogle }>Sign in</button>
-          }
      </div>
 
     )
