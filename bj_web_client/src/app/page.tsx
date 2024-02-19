@@ -5,31 +5,25 @@ import Navbar from "./components/Navbar/Navbar";
 import { io } from "socket.io-client";
 import Games from "./components/QuizPage/QuizPage";
 import Head from "next/head";
-import { MainPage } from "./components/MainPage/MainPage";
 import Footer from "./components/Footer/Footer";
 import { User } from "firebase/auth";
 import LoginPage from "./components/LoginPage/LoginPage";
+import MenuPage from "./components/MenuPage/MenuPage";
 
 let socket: any;
 
 export default function Home() {
 
-  const [isLogged, setIsLogged] = useState(false)
   const [user, setUser] = useState<User | null>(null)
+  const [room_id, setRoomID] = useState("")
 
-  function connect(){
-    socket = io("http://localhost:3001");
-
-    socket.on("connect", () => {
-      console.log(socket.id); 
-      if(socket.connected){
-        setIsLogged(true);
-      }
-    });
-  }
 
   function updateUser(user : User | null){
     setUser(user);
+  }
+
+  function updateRoomID(room_id : string){
+    setRoomID(room_id);
   }
 
   function sendMessage(){
@@ -42,7 +36,22 @@ export default function Home() {
         <Navbar />
 
         {
-          user ? <MainPage /> : <LoginPage updateUser={updateUser} />
+
+          user ? 
+            <>
+              {
+                room_id == "" ?
+                <MenuPage socket={socket} updateRoomID={updateRoomID} /> 
+                :
+                //THERE SHOULD BE A LOBBY MENU
+                <Games />
+
+              }
+            
+            </>
+          
+          : 
+          <LoginPage updateUser={updateUser} />
         }
 
         <Footer />
