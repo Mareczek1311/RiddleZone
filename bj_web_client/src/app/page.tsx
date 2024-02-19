@@ -3,6 +3,9 @@
 import { useState } from "react";
 import Navbar from "./components/Navbar/Navbar";
 import { io } from "socket.io-client";
+import Games from "./components/QuizPage/QuizPage";
+import Head from "next/head";
+import { MainPage } from "./components/MainPage/MainPage";
 
 let socket: any;
 
@@ -27,9 +30,14 @@ export default function Home() {
 
   return (
       <div>
+   
         <Navbar />
-        <button onClick={connect}>DOLACZ</button>
+        
         {
+
+          /*
+        <button onClick={connect}>DOLACZ</button>
+
           isLogged ? 
             <div>
               <div>WE are in game</div>
@@ -37,7 +45,11 @@ export default function Home() {
             </div>
           :
           null
+          */
         }
+        
+        <MainPage />
+
       </div>
   );
 }
