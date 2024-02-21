@@ -1,5 +1,14 @@
 
-import { db } from "./firebase"
+  /*
+  await docRef.set({
+    first: 'Ada',
+    last: 'Lovelace',
+    born: 1815
+  });
+  */
+
+  
+const db = require("./firebase")
 
 const e = require("express");
 const express = require("express");
@@ -8,8 +17,6 @@ const { createServer } = require("node:http");
 const { join } = require("node:path");
 
 const { Server } = require("socket.io");
-
-
 
 const app = express();
 const server = createServer(app);
@@ -57,8 +64,10 @@ io.on("connection", (socket) => {
 
 });
 
-app.get("/", (req, res) => {
-  res.sendFile(join(__dirname, "index.html"));
+app.get("/", async (req, res) => {
+  console.log("GET /");
+  const docRef = db.collection('users').doc('alovelace');
+
 });
 
 server.listen(3001, () => {

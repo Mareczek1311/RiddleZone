@@ -25,7 +25,6 @@ const LobbyPage: React.FC<LobbyPageProps> = ({
         return (
           <div key={index}>
             <h3>{player}</h3>
-
           </div>
         );
       })}
