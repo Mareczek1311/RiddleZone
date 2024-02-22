@@ -1,17 +1,7 @@
-  /*
-  const docRef = db.collection('users').doc('alovelace');
-  await docRef.set({
-    first: 'Ada',
-    last: 'Lovelace',
-    born: 1815
-  });
-*/
-
 // kontrola bledow!!!!!
 
-const db = require("./firebase")
-const admin = require('firebase-admin');
-
+const db = require("./firebase");
+const admin = require("firebase-admin");
 
 const e = require("express");
 const express = require("express");
@@ -30,96 +20,115 @@ const io = new Server(server, {
   },
 });
 
+async function addPlayerToRoomFirebase(room_id, player_id, real_player_id) {
+  const docRef = await db.collection("rooms").doc(room_id);
+  const doc = await docRef.get(); // Pobierz dokument
 
-// for all of those functions we need to return status 
-// -1 if error 0 or 1 if everything is right
-
-async function createRoomFirebase(room_id){
-  const docRef = db.collection('rooms').doc(room_id);
-  await docRef.set({
-  });
+  if (!doc.exists) {
+    docRef
+      .set(
+        {
+          // 0 - isReady, 1 - admin, 2 - real_player_id
+          [player_id]: [false, true, real_player_id],
+        },
+        { merge: true }
+      )
+      .then(() => console.log("Field added successfully"))
+      .catch((error) => console.error("ERROR: Error adding field: ", error));
+  } else {
+    docRef
+      .update({
+        [player_id]: [false, false, real_player_id],
+      })
+      .then(() => console.log("Field added successfully"))
+      .catch((error) => console.error("ERROR: Error adding field: ", error));
+  }
 }
 
-async function addPlayerToRoomFirebase(room_id, player_id){
-  const docRef = db.collection('rooms').doc(room_id);
-  docRef.set({
-    [player_id] : false,
-  }, { merge: true })
-  .then(() => console.log("Field added successfully"))
-  .catch((error) => console.error("Error adding field: ", error));
-}
+async function removePlayerFromRoomFirebase(room_id, player_id) {
+  const docRef = db.collection("rooms").doc(room_id);
 
-async function removePlayerFromRoomFirebase(room_id, player_id){
-  const docRef = db.collection('rooms').doc(room_id);
-  
   await db.runTransaction(async (transaction) => {
-    const doc = await transaction.get(docRef);
+    const doc = await transaction
+      .get(docRef)
+      .catch((error) =>
+        console.error("ERROR: Error getting document: ", error)
+      );
     if (!doc.exists) {
       throw "Document does not exist!";
     }
 
     const new_data = doc.data();
-    console.log("Tablica z graczami: ", new_data);
+
     if (new_data.hasOwnProperty(player_id)) {
       delete new_data[player_id];
-      transaction.update(docRef, { [player_id]: admin.firestore.FieldValue.delete() });
+      transaction.update(docRef, {
+        [player_id]: admin.firestore.FieldValue.delete(),
+      });
       console.log(`Gracz ${player_id} został usunięty z pokoju ${room_id}.`);
-    }
-    else{
+    } else {
       console.log(`Gracz ${player_id} nie istnieje w pokoju ${room_id}.`);
-    } 
-  })
-
-
-}
-
-async function deleteRoom(room_id){
-  const docRef = db.collection('rooms').doc(room_id);
-  await docRef.delete();
-}
-
-async function updatePlayerReady(room_id, player_id, value){
-  const docRef = db.collection('rooms').doc(room_id);
-  await docRef.update({
-    [player_id] : value
+    }
   });
 }
 
-async function getRoomPlayers(room_id){
-  const docRef = db.collection('rooms').doc(room_id);
-  const doc = await docRef.get();
-  if (!doc.exists) {
-    console.log('No such document!');
-
-    return -1
-  } else {
-    console.log('Document data:', doc.data());
-/*    
-    for (const [key, value] of Object.entries(doc.data())) {
-      console.log(key, value);
-    }
-*/
-    return doc.data();
-  }
+async function deleteRoom(room_id) {
+  const docRef = db.collection("rooms").doc(room_id);
+  await docRef.delete();
 }
 
-async function countReady(arr){
-  let counter = 0
-    
+async function updatePlayerReady(room_id, player_id, value) {
+  const docRef = db.collection("rooms").doc(room_id);
+  const doc = await docRef.get();
+
+  if (!doc.exists) {
+    console.log("ERROR: No such document!");
+    return;
+  }
+
+  const copy = doc.data()[player_id];
+
+  await docRef.update({
+    [player_id]: [value, copy[1], copy[2]],
+  });
+}
+
+async function getRoomPlayers(room_id) {
+  console.log("===GET_ROOM_PLAYERS===");
+
+  const docRef = db.collection("rooms").doc(room_id);
+  const doc = await docRef.get();
+  if (!doc.exists) {
+    console.log("ERROR: No such document!");
+    return -1;
+  }
+  console.log("DATA RECEIVED: ", doc.data());
+
+  return doc.data();
+}
+
+function countReady(arr) {
+  console.log("===COUNT_READY===");
+
+  let counter = 0;
+
   for (const [key, value] of Object.entries(arr)) {
-    console.log(value)
-    if(value == true){
+    if (value[0] == true) {
       counter++;
     }
   }
 
-  return counter;;
+  console.log("COUNTER: ", counter);
+
+  return counter;
 }
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  console.log("===!CONNECTION!===");
 
   socket.on("connect_to_room", async (room_id) => {
+    console.log("===CONNECT_TO_ROOM===");
+
     if (room_id == "") {
       room_id = "room" + Math.floor(Math.random() * 1000);
     }
@@ -128,75 +137,66 @@ io.on("connection", (socket) => {
     socket.room_id = room_id;
     console.log("ROOM ID: ", room_id);
 
-    //im not sure if socket.id returns real id of a socket
-    await addPlayerToRoomFirebase(room_id, socket.id);
+    await addPlayerToRoomFirebase(room_id, socket.id, -1);
 
     io.to(room_id).emit("get_room_id", room_id);
   });
 
+  socket.on("get_player_data", async (room_id) => {
+    const data = await getRoomPlayers(room_id);
+    console.log("===GET_PLAYER_DATA===");
+    console.log("DATA: ", data);
+    socket.emit("send_player_data", data[socket.id]);
+  });
+
   socket.on("get_player_list", (room_id) => {
-    console.log("WE GOT:", room_id);
+    console.log("===GET_PLAYER_LIST===");
 
     const room = io.sockets.adapter.rooms.get(room_id);
     if (room) {
       const playerList = Array.from(room);
 
       io.to(room_id).emit("send_player_list", playerList);
-      console.log(room);
+      console.log("PLAYER LIST: ", playerList);
     } else {
-      console.log("Room not found or empty");
+      console.log("ERROR: Room not found or empty");
     }
   });
 
-  socket.on("ready", async (data) => {
-    console.log("READY:", data.room_id, data.ready);
+  socket.on("set_state", async (data) => {
+    console.log("===SET_STATE===");
+
+    console.log("STATE FROM: ", data.ready);
     await updatePlayerReady(data.room_id, socket.id, data.ready);
-    
+    console.log("STATE TO: ", data.ready);
+
+    console.log("counting ready players...");
     const arr = await getRoomPlayers(data.room_id);
 
     const counter = await countReady(arr);
-    console.log("COUNTER: ", counter);
 
+    console.log("SENDING READY COUNTER?");
     io.to(data.room_id).emit("update_ready", counter);
-
-  })
+  });
 
   socket.on("disconnect", async (reason) => {
-    console.log("PLAYER DISCONNECTED");
+    console.log("===PLAYER DISCONNECTED===");
     await removePlayerFromRoomFirebase(socket.room_id, socket.id);
 
-    const arr = await getRoomPlayers(socket.room_id)
-    const numberOfKeys = Object.keys(arr).length; // Liczba kluczy w obiekcie
+    const arr = await getRoomPlayers(socket.room_id);
+    const numberOfKeys = Object.keys(arr).length;
 
-
-    console.log("HUJJJJ", arr)
-    console.log("HUJJJJ2", numberOfKeys)
-
-    if(numberOfKeys == 0){
+    if (numberOfKeys == 0) {
       deleteRoom(socket.room_id);
       return;
     }
   });
-
-
 });
 
 app.get("/", async (req, res) => {
   console.log("GET /");
-
-
-  /* SIMPLE USAGE EXAMPLES
-  await removePlayerFromRoomFirebase("1001", "1941789KDWOIU31241")
-
-
-  await createRoomFirebase("1001")
-  await addPlayerToRoomFirebase("1001", "1941789KDWOIU31241")
-  await getRoomPlayers("1001")
-  await updatePlayerReady("1001", "1941789KDWOIU31241", true)
-  await getRoomPlayers("1001")
-  */
 });
 
 server.listen(3001, () => {
-  console.log("server running at http://localhost:3000");
+  console.log("server running at http://localhost:3001");
 });

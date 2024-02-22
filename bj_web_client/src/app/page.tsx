@@ -1,10 +1,13 @@
 "use client";
 
+/*
+  for every button click we need to do a loading screen
+*/
+
 import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar/Navbar";
 import { io } from "socket.io-client";
 import Games from "./components/QuizPage/QuizPage";
-import Head from "next/head";
 import Footer from "./components/Footer/Footer";
 import { User } from "firebase/auth";
 import LoginPage from "./components/LoginPage/LoginPage";
@@ -19,8 +22,9 @@ export default function Home() {
   const [user, setUser] = useState<User | null>(null);
   const [room_id, setRoomID] = useState("");
   const [started, setIsStarted] = useState(false);
-  const [playerList, setPlayerList] = useState<string[]>([]);
+  const [playerList, setPlayerList] = useState([]);
   const [readyCounter, setReadyCounter] = useState(0);
+  const [playerData, setPlayerData] = useState<[boolean, boolean, string]>([false, false, "-1"]);
 
   function updateUser(user: User | null) {
     setUser(user);
@@ -42,10 +46,17 @@ export default function Home() {
       console.log("Room ID: ", room_id);
       updateRoomID(room_id);
       socket.emit("get_player_list", room_id);
-      socket.on("send_player_list", (playerList: string[]) => {
+      socket.on("send_player_list", (playerList: []) => {
         setPlayerList(playerList);
-        console.log(playerList);
+        console.log("PlayerList: ", playerList);
       });
+      
+      socket.emit("get_player_data", room_id);
+      socket.on("send_player_data", (data: any) => {
+        setPlayerData(data);
+        console.log("PlayerData: ", data);
+      });
+
     });
   };
   
@@ -54,6 +65,7 @@ export default function Home() {
       setReadyCounter(data);
       console.log("Ready Counter: ", data);
     });
+
   }
 
   useEffect(() => {
@@ -84,6 +96,7 @@ export default function Home() {
               room_id={room_id}
               playerList={playerList}
               readyCounter={readyCounter}
+              playerData={playerData}
             />
           ) : (
             <Games />
