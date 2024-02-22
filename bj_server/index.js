@@ -7,6 +7,8 @@
   });
 */
 
+// kontrola bledow!!!!!
+
 const db = require("./firebase")
 const admin = require('firebase-admin');
 
@@ -28,6 +30,10 @@ const io = new Server(server, {
   },
 });
 
+
+// for all of those functions we need to return status 
+// -1 if error 0 or 1 if everything is right
+
 async function createRoomFirebase(room_id){
   const docRef = db.collection('rooms').doc(room_id);
   await docRef.set({
@@ -36,9 +42,11 @@ async function createRoomFirebase(room_id){
 
 async function addPlayerToRoomFirebase(room_id, player_id){
   const docRef = db.collection('rooms').doc(room_id);
-  await docRef.update({
-    [player_id] : false
-  });
+  docRef.set({
+    [player_id] : false,
+  }, { merge: true })
+  .then(() => console.log("Field added successfully"))
+  .catch((error) => console.error("Error adding field: ", error));
 }
 
 async function removePlayerFromRoomFirebase(room_id, player_id){
@@ -65,6 +73,11 @@ async function removePlayerFromRoomFirebase(room_id, player_id){
 
 }
 
+async function deleteRoom(room_id){
+  const docRef = db.collection('rooms').doc(room_id);
+  await docRef.delete();
+}
+
 async function updatePlayerReady(room_id, player_id, value){
   const docRef = db.collection('rooms').doc(room_id);
   await docRef.update({
@@ -77,26 +90,46 @@ async function getRoomPlayers(room_id){
   const doc = await docRef.get();
   if (!doc.exists) {
     console.log('No such document!');
+
+    return -1
   } else {
     console.log('Document data:', doc.data());
-    
+/*    
     for (const [key, value] of Object.entries(doc.data())) {
       console.log(key, value);
     }
-
+*/
+    return doc.data();
   }
+}
+
+async function countReady(arr){
+  let counter = 0
+    
+  for (const [key, value] of Object.entries(arr)) {
+    console.log(value)
+    if(value == true){
+      counter++;
+    }
+  }
+
+  return counter;;
 }
 
 io.on("connection", (socket) => {
   console.log("a user connected");
 
-  socket.on("connect_to_room", (room_id) => {
+  socket.on("connect_to_room", async (room_id) => {
     if (room_id == "") {
       room_id = "room" + Math.floor(Math.random() * 1000);
     }
 
     socket.join(room_id);
+    socket.room_id = room_id;
     console.log("ROOM ID: ", room_id);
+
+    //im not sure if socket.id returns real id of a socket
+    await addPlayerToRoomFirebase(room_id, socket.id);
 
     io.to(room_id).emit("get_room_id", room_id);
   });
@@ -115,10 +148,34 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("ready", () => {})
+  socket.on("ready", async (data) => {
+    console.log("READY:", data.room_id, data.ready);
+    await updatePlayerReady(data.room_id, socket.id, data.ready);
+    
+    const arr = await getRoomPlayers(data.room_id);
 
-  socket.on("disconnect", (reason) => {
+    const counter = await countReady(arr);
+    console.log("COUNTER: ", counter);
+
+    io.to(data.room_id).emit("update_ready", counter);
+
+  })
+
+  socket.on("disconnect", async (reason) => {
     console.log("PLAYER DISCONNECTED");
+    await removePlayerFromRoomFirebase(socket.room_id, socket.id);
+
+    const arr = await getRoomPlayers(socket.room_id)
+    const numberOfKeys = Object.keys(arr).length; // Liczba kluczy w obiekcie
+
+
+    console.log("HUJJJJ", arr)
+    console.log("HUJJJJ2", numberOfKeys)
+
+    if(numberOfKeys == 0){
+      deleteRoom(socket.room_id);
+      return;
+    }
   });
 
 
