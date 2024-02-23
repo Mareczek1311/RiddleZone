@@ -13,6 +13,7 @@ import { User } from "firebase/auth";
 import LoginPage from "./components/LoginPage/LoginPage";
 import MenuPage from "./components/MenuPage/MenuPage";
 import LobbyPage from "./components/LobbyPage/LobbyPage";
+import QuestionPick from "./components/QuestionPick/QuestionPick";
 
 var socket: any;
 socket = null;
@@ -32,6 +33,10 @@ export default function Home() {
 
   function updateRoomID(room_id: string) {
     setRoomID(room_id);
+  }
+
+  function updateStarted(started: boolean) {
+    setIsStarted(started);
   }
 
   const ConnectToRoom = async (room_id: string) => {
@@ -97,9 +102,10 @@ export default function Home() {
               playerList={playerList}
               readyCounter={readyCounter}
               playerData={playerData}
+              updateStarted={updateStarted}
             />
           ) : (
-            <Games />
+            <QuestionPick />
           )}
         </>
       ) : (

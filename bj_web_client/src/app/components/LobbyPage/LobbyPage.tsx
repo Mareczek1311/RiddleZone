@@ -7,6 +7,7 @@ interface LobbyPageProps {
   playerList: string[];
   readyCounter: number;
   playerData: [boolean, boolean, string];
+  updateStarted: (started: boolean) => void;
 }
 
 const LobbyPage: React.FC<LobbyPageProps> = ({
@@ -15,6 +16,7 @@ const LobbyPage: React.FC<LobbyPageProps> = ({
   playerList,
   readyCounter,
   playerData,
+  updateStarted
 }) => {
 
   const [ready, setReady] = useState(false);
@@ -40,7 +42,11 @@ const LobbyPage: React.FC<LobbyPageProps> = ({
       })}
 
       {(!ready) ? <button onClick={() => {handleReady()}}>Ready</button> : <button onClick={() => {handleReady()}}>Not Ready</button>}
-      {(readyCounter === playerList.length && playerData[1]) ? <button>Start Game</button> : null}
+      {(readyCounter === playerList.length && playerData[1]) ? 
+      <button onClick={() => {
+        //socket.emit("start_game", room_id);
+        updateStarted(true);
+      }}>Start Game</button> : null}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 // kontrola bledow!!!!!
+// IF ADMIN DISCONNECTS, MAKE ADMIN THE NEXT PLAYER IN LINE
 
 const db = require("./firebase");
 const admin = require("firebase-admin");
