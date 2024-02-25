@@ -92,6 +92,10 @@ export default function Home() {
       setCurrQuestion(question);
     })
 
+    socket.on("start_game", () => {
+      updateStarted(true);
+    })
+
   }
 
   useEffect(() => {

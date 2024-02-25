@@ -255,6 +255,12 @@ io.on("connection", (socket) => {
     io.to(data.room_id).emit("update_ready", counter);
   });
 
+  socket.on("start_game", async (room_id) => {
+    console.log("===START_GAME===");
+    io.to(room_id).emit("start_game");
+
+  })
+
   socket.on("disconnect", async (reason) => {
     console.log("===PLAYER DISCONNECTED===");
     

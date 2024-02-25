@@ -44,7 +44,7 @@ const LobbyPage: React.FC<LobbyPageProps> = ({
       {(!ready) ? <button onClick={() => {handleReady()}}>Ready</button> : <button onClick={() => {handleReady()}}>Not Ready</button>}
       {(readyCounter === playerList.length && playerData[0]) ? 
       <button onClick={() => {
-        //socket.emit("start_game", room_id);
+        socket.emit("start_game", room_id);
         updateStarted(true);
       }}>Start Game</button> : null}
     </div>
