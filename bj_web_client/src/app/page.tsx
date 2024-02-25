@@ -80,7 +80,9 @@ export default function Home() {
       console.log("PlayerData: ", data);
     });
 
-
+    socket.on("send_questionSet", () => {
+      setQuestionSetSelected(true);
+    })
 
   }
 
@@ -115,9 +117,15 @@ export default function Home() {
               playerData={playerData}
               updateStarted={updateStarted}
             />
-          ) : (
+          ) : 
+          !questionSetSelected ? (
             <QuestionPick
               socket={socket}
+              room_id={room_id}
+            />
+          ) : 
+          (
+            <QuestionPage
             />
           )}
         </>

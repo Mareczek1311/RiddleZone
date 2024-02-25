@@ -4,9 +4,10 @@ import { set } from "firebase/database";
 
 interface QuestionPickProps {
     socket: any;
+    room_id: string;
 }
 
-const QuestionPick : React.FC<QuestionPickProps> = ({ socket }) =>{
+const QuestionPick : React.FC<QuestionPickProps> = ({ socket, room_id }) =>{
     
     const [questionList, setQuestionList] = useState([]);
 
@@ -21,12 +22,12 @@ const QuestionPick : React.FC<QuestionPickProps> = ({ socket }) =>{
 
     const PickQuestion = (answer : string) => {
         console.log("Picked question set: " + answer);
+        socket.emit("pick_questionSet", [room_id, answer]);
     }
     
     return (
     <div className="MainSection">
         <h1>QuestionPick</h1>
-
         {
             questionList.map((question: any) => {
                 return (

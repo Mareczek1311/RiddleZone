@@ -155,6 +155,21 @@ io.on("connection", (socket) => {
   })
   
 
+  socket.on("pick_questionSet", async (data) => {
+    const docRef = db.collection("rooms").doc(data[0])
+
+    await docRef.set({
+      questionSet: data[1],
+      currQuestion: 1,
+    }, { merge: true }).then(() => {
+      console.log("Field added successfully");
+    }).catch((error) => {
+      console.error("ERROR: Error adding field: ", error);
+    })
+
+    io.to(data[0]).emit("send_questionSet");
+  })
+
   socket.on("connect_to_room", async (room_id) => {
     console.log("===CONNECT_TO_ROOM===");
 
