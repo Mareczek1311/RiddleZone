@@ -51,10 +51,7 @@ export default function Home() {
       console.log("Room ID: ", room_id);
       updateRoomID(room_id);
       socket.emit("get_player_list", room_id);
-      socket.on("send_player_list", (playerList: []) => {
-        setPlayerList(playerList);
-        console.log("PlayerList: ", playerList);
-      });
+  
       
       socket.emit("get_player_data", room_id);
       socket.on("send_player_data", (data: any) => {
@@ -69,6 +66,16 @@ export default function Home() {
     socket.on("update_ready", (data: any) => {
       setReadyCounter(data);
       console.log("Ready Counter: ", data);
+    });
+
+    socket.on("send_player_list", (playerList: []) => {
+      setPlayerList(playerList);
+      console.log("PlayerList: ", playerList);
+    });
+
+    socket.on("send_player_data", (data: any) => {
+      setPlayerData(data);
+      console.log("PlayerData: ", data);
     });
 
   }

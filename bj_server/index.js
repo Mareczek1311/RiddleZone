@@ -22,64 +22,82 @@ const io = new Server(server, {
 });
 
 async function addPlayerToRoomFirebase(room_id, player_id, real_player_id) {
-  const docRef = await db.collection("rooms").doc(room_id);
-  const doc = await docRef.get(); // Pobierz dokument
+  const playersCollectionRef = await db.collection("rooms").doc(room_id).collection("players");
+  var isEmpty = true;
+  await playersCollectionRef.get().then(snapshot => {
+    if (!snapshot.empty) {
+      isEmpty = false;
+    } 
+  }).catch(error => {
+    console.error('Wystąpił błąd podczas pobierania dokumentów: ', error);
+  });
+  
+  const docRef = await db.collection("rooms").doc(room_id).collection("players").doc(player_id);
+  const doc = await docRef.get(); // Pobierz dokument\
+  //Sprawdz czy w kolekcji players ktos istnieje
 
-  if (!doc.exists) {
+  console.log("isEmpty: ",isEmpty)
+
+
+  if (isEmpty) {
     docRef
       .set(
         {
-          // 0 - isReady, 1 - admin, 2 - real_player_id
-          [player_id]: [false, true, real_player_id],
-        },
-        { merge: true }
+          isAdmin: true,
+          isReady: false,
+          realID: -1,
+        }
       )
       .then(() => console.log("Field added successfully"))
       .catch((error) => console.error("ERROR: Error adding field: ", error));
   } else {
     docRef
-      .update({
-        [player_id]: [false, false, real_player_id],
-      })
+      .set(
+        {
+          isAdmin: false,
+          isReady: false,
+          realID: -1,
+        }
+      )
       .then(() => console.log("Field added successfully"))
       .catch((error) => console.error("ERROR: Error adding field: ", error));
   }
 }
 
 async function removePlayerFromRoomFirebase(room_id, player_id) {
-  const docRef = db.collection("rooms").doc(room_id);
-
-  await db.runTransaction(async (transaction) => {
-    const doc = await transaction
-      .get(docRef)
-      .catch((error) =>
-        console.error("ERROR: Error getting document: ", error)
-      );
-    if (!doc.exists) {
-      throw "Document does not exist!";
-    }
-
-    const new_data = doc.data();
-
-    if (new_data.hasOwnProperty(player_id)) {
-      delete new_data[player_id];
-      transaction.update(docRef, {
-        [player_id]: admin.firestore.FieldValue.delete(),
-      });
-      console.log(`Gracz ${player_id} został usunięty z pokoju ${room_id}.`);
+  const docRef = db.collection("rooms").doc(room_id).collection("players").doc(player_id);
+  const isAdmin = await docRef.get().then((doc) => {
+    if (doc.exists) {
+      console.log("Document data:", doc.data());
+      return doc.data()["isAdmin"];
     } else {
-      console.log(`Gracz ${player_id} nie istnieje w pokoju ${room_id}.`);
+      console.log("No such document!");
+      return false;
     }
+  } ).catch((error) => {
+    console.error("ERROR: Error getting document:", error);
+  } );
+
+  await docRef.delete().then(() => {
+    console.log("Field deleted successfully");
+  }).catch((error) => {
+    console.error("ERROR: Error removing field: ", error);
   });
-}
+
+  return isAdmin;
+} 
 
 async function deleteRoom(room_id) {
   const docRef = db.collection("rooms").doc(room_id);
-  await docRef.delete();
+  await docRef.delete().then(() => {  
+    console.log("Room deleted successfully");
+  }).catch((error) => {
+    console.error("ERROR: Error removing room: ", error);
+  })
 }
 
 async function updatePlayerReady(room_id, player_id, value) {
-  const docRef = db.collection("rooms").doc(room_id);
+  const docRef = db.collection("rooms").doc(room_id).collection("players").doc(player_id);
   const doc = await docRef.get();
 
   if (!doc.exists) {
@@ -87,25 +105,22 @@ async function updatePlayerReady(room_id, player_id, value) {
     return;
   }
 
-  const copy = doc.data()[player_id];
-
   await docRef.update({
-    [player_id]: [value, copy[1], copy[2]],
+    isReady: value,
   });
 }
 
 async function getRoomPlayers(room_id) {
   console.log("===GET_ROOM_PLAYERS===");
+  const arr = {}
+  const docRef = db.collection("rooms").doc(room_id).collection("players");
+  await docRef.get().then(snapshot => {
+    snapshot.forEach(doc => {
+      arr[doc.id] = doc.data();
+    });
+  });
 
-  const docRef = db.collection("rooms").doc(room_id);
-  const doc = await docRef.get();
-  if (!doc.exists) {
-    console.log("ERROR: No such document!");
-    return -1;
-  }
-  console.log("DATA RECEIVED: ", doc.data());
-
-  return doc.data();
+  return arr
 }
 
 function countReady(arr) {
@@ -114,7 +129,7 @@ function countReady(arr) {
   let counter = 0;
 
   for (const [key, value] of Object.entries(arr)) {
-    if (value[0] == true) {
+    if (value["isReady"] == true) {
       counter++;
     }
   }
@@ -147,21 +162,17 @@ io.on("connection", (socket) => {
     const data = await getRoomPlayers(room_id);
     console.log("===GET_PLAYER_DATA===");
     console.log("DATA: ", data);
-    socket.emit("send_player_data", data[socket.id]);
+    socket.emit("send_player_data", [data[socket.id]["isAdmin"], data[socket.id]["isReady"], data[socket.id]["realID"]]);
   });
 
   socket.on("get_player_list", (room_id) => {
     console.log("===GET_PLAYER_LIST===");
 
     const room = io.sockets.adapter.rooms.get(room_id);
-    if (room) {
-      const playerList = Array.from(room);
+    const playerList = Array.from(room);
 
-      io.to(room_id).emit("send_player_list", playerList);
-      console.log("PLAYER LIST: ", playerList);
-    } else {
-      console.log("ERROR: Room not found or empty");
-    }
+    io.to(room_id).emit("send_player_list", playerList);
+    console.log("PLAYER LIST: ", playerList);
   });
 
   socket.on("set_state", async (data) => {
@@ -182,14 +193,43 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", async (reason) => {
     console.log("===PLAYER DISCONNECTED===");
-    await removePlayerFromRoomFirebase(socket.room_id, socket.id);
+    
+    const isAdmin = await removePlayerFromRoomFirebase(socket.room_id, socket.id);
+
+    if (isAdmin) {
+      console.log("ADMIN DISCONNECTED");
+      const arr2 = await getRoomPlayers(socket.room_id);
+
+      const keys = Object.keys(arr2);
+      console.log("keys: ", keys)
+
+      if (keys.length > 0) {
+        const nextAdmin = keys[0];
+        console.log("NEXT ADMIN: ", nextAdmin);
+
+        const docRef = db.collection("rooms").doc(socket.room_id).collection("players").doc(nextAdmin);
+        await docRef.update({
+          isAdmin: true,
+        });
+        socket.to(nextAdmin).emit("send_player_data", [true, arr2[nextAdmin]["isReady"], arr2[nextAdmin]["realID"]]);
+      }
+
+    }
 
     const arr = await getRoomPlayers(socket.room_id);
     const numberOfKeys = Object.keys(arr).length;
 
+
     if (numberOfKeys == 0) {
       deleteRoom(socket.room_id);
       return;
+    }
+    else{
+      const room = io.sockets.adapter.rooms.get(socket.room_id);
+      const playerList = Array.from(room);
+
+      io.to(socket.room_id).emit("send_player_list", playerList);
+      console.log("PLAYER LIST: ", playerList);
     }
   });
 });
