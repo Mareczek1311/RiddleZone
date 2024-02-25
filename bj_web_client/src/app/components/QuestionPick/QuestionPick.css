@@ -1,1 +1,33 @@
 
+.quizSection{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.MainSection{
+    height: 90vh;
+}
+
+button{
+    margin-top: 20px;
+    width: 200px;
+    height: 50px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: 0.3s;
+}
+button:hover{
+    background-color: #45a049;
+}
+button:active{
+    background-color: #3e8e41;
+}
+
+

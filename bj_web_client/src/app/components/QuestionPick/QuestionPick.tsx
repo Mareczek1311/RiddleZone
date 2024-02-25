@@ -1,24 +1,45 @@
+import { useEffect, useState } from "react";
 import "./QuestionPick.css"
+import { set } from "firebase/database";
 
-export default function QuestionPick() {
+interface QuestionPickProps {
+    socket: any;
+}
+
+const QuestionPick : React.FC<QuestionPickProps> = ({ socket }) =>{
+    
+    const [questionList, setQuestionList] = useState([]);
+
+    useEffect(() => {
+        socket.emit("get_question_list");
+        socket.on("send_question_list", (questionList: []) => {
+            console.log("QuestionList: ", questionList);
+            setQuestionList(questionList);
+        });
+    }, []);
+
+
+    const PickQuestion = (answer : string) => {
+        console.log("Picked question set: " + answer);
+    }
+    
     return (
-    <div>
+    <div className="MainSection">
         <h1>QuestionPick</h1>
-        <div>
-            <div>
-                <p>Question set #1</p>
-            </div>
-            <div>
-                <p>Question set #2</p>
-            </div>
-            <div>
-                <p>Question set #3</p>
-            </div>
-            <div>
-                <p>Question set #4</p>
-            </div>
-            
-        </div>
+
+        {
+            questionList.map((question: any) => {
+                return (
+                    <div className="QuestionSection" key={question[0]}>
+                        <p>{question[1]}</p>
+                        <button onClick={() => PickQuestion(question[0])}>Pick</button>
+                    </div>
+                )
+            })
+        }
+        
     </div>
     );
 }
+
+export default QuestionPick;

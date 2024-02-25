@@ -14,6 +14,7 @@ import LoginPage from "./components/LoginPage/LoginPage";
 import MenuPage from "./components/MenuPage/MenuPage";
 import LobbyPage from "./components/LobbyPage/LobbyPage";
 import QuestionPick from "./components/QuestionPick/QuestionPick";
+import QuestionPage from "./components/QuestionPage/QuestionPage";
 
 var socket: any;
 socket = null;
@@ -26,6 +27,7 @@ export default function Home() {
   const [playerList, setPlayerList] = useState([]);
   const [readyCounter, setReadyCounter] = useState(0);
   const [playerData, setPlayerData] = useState<[boolean, boolean, string]>([false, false, "-1"]);
+  const [questionSetSelected, setQuestionSetSelected] = useState(false);
 
   function updateUser(user: User | null) {
     setUser(user);
@@ -78,6 +80,8 @@ export default function Home() {
       console.log("PlayerData: ", data);
     });
 
+
+
   }
 
   useEffect(() => {
@@ -112,7 +116,9 @@ export default function Home() {
               updateStarted={updateStarted}
             />
           ) : (
-            <QuestionPick />
+            <QuestionPick
+              socket={socket}
+            />
           )}
         </>
       ) : (
@@ -122,4 +128,5 @@ export default function Home() {
       <Footer />
     </div>
   );
+ 
 }

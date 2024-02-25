@@ -1,5 +1,5 @@
 // kontrola bledow!!!!!
-// IF ADMIN DISCONNECTS, MAKE ADMIN THE NEXT PLAYER IN LINE
+
 
 const db = require("./firebase");
 const admin = require("firebase-admin");
@@ -141,6 +141,19 @@ function countReady(arr) {
 
 io.on("connection", (socket) => {
   console.log("===!CONNECTION!===");
+
+  socket.on("get_question_list", async (room_id) => {
+    const docRef = db.collection("questions");
+    const arr = [];
+    await docRef.get().then(snapshot => {
+      snapshot.forEach(doc => {
+        arr.push([doc.id, doc.data()["name"]]);
+      });
+    });
+
+    socket.emit("send_question_list", arr);
+  })
+  
 
   socket.on("connect_to_room", async (room_id) => {
     console.log("===CONNECT_TO_ROOM===");
