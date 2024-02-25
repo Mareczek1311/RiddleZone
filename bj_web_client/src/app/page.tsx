@@ -28,6 +28,7 @@ export default function Home() {
   const [readyCounter, setReadyCounter] = useState(0);
   const [playerData, setPlayerData] = useState<[boolean, boolean, string]>([false, false, "-1"]);
   const [questionSetSelected, setQuestionSetSelected] = useState(false);
+  const [currQuestion, setCurrQuestion] = useState([]);
 
   function updateUser(user: User | null) {
     setUser(user);
@@ -82,6 +83,13 @@ export default function Home() {
 
     socket.on("send_questionSet", () => {
       setQuestionSetSelected(true);
+      socket.emit("get_question", room_id);
+
+    })
+
+    socket.on("send_question", (question: any) => {
+      console.log("Question: ", question);
+      setCurrQuestion(question);
     })
 
   }
@@ -126,6 +134,9 @@ export default function Home() {
           ) : 
           (
             <QuestionPage
+              socket={socket}
+              room_id={room_id}
+              currQuestion={currQuestion}
             />
           )}
         </>

@@ -11,6 +11,7 @@ const { createServer } = require("node:http");
 const { join } = require("node:path");
 
 const { Server } = require("socket.io");
+const { send } = require("node:process");
 
 const app = express();
 const server = createServer(app);
@@ -46,6 +47,7 @@ async function addPlayerToRoomFirebase(room_id, player_id, real_player_id) {
           isAdmin: true,
           isReady: false,
           realID: -1,
+          score: 0,
         }
       )
       .then(() => console.log("Field added successfully"))
@@ -57,6 +59,7 @@ async function addPlayerToRoomFirebase(room_id, player_id, real_player_id) {
           isAdmin: false,
           isReady: false,
           realID: -1,
+          score: 0,
         }
       )
       .then(() => console.log("Field added successfully"))
@@ -157,10 +160,20 @@ io.on("connection", (socket) => {
 
   socket.on("pick_questionSet", async (data) => {
     const docRef = db.collection("rooms").doc(data[0])
+    const playerCount = await docRef.collection("players").get().then(snapshot => {
+      return snapshot.size;
+    });
+    const docRef2 = db.collection("questions").doc(data[1]).collection("questions");
+    const docRef2Size = await docRef2.get().then(snapshot => {
+      return snapshot.size;
+    })
 
     await docRef.set({
       questionSet: data[1],
       currQuestion: 1,
+      maxPlayers: playerCount,
+      maxQuestions: docRef2Size,
+
     }, { merge: true }).then(() => {
       console.log("Field added successfully");
     }).catch((error) => {
@@ -168,6 +181,29 @@ io.on("connection", (socket) => {
     })
 
     io.to(data[0]).emit("send_questionSet");
+  })
+
+  socket.on("get_question", async (room_id) => {
+    const docRef = db.collection("rooms").doc(room_id);
+    const doc = await docRef.get();
+
+    const currQuestion = doc.data()["currQuestion"];
+    const questionSet = doc.data()["questionSet"];
+
+    const questionRef = db.collection("questions").doc(questionSet).collection("questions").doc(currQuestion.toString());
+
+    const question = await questionRef.get();
+
+    const questionData = [question.data()["name"], question.data()["a"], question.data()["b"], question.data()["c"], question.data()["d"]];
+
+    console.log("SENDING QUESTION: ", questionData);
+
+    io.to(room_id).emit("send_question", questionData);
+
+  })
+
+  socket.on("send_answer", async (data) => {
+
   })
 
   socket.on("connect_to_room", async (room_id) => {
@@ -190,7 +226,7 @@ io.on("connection", (socket) => {
     const data = await getRoomPlayers(room_id);
     console.log("===GET_PLAYER_DATA===");
     console.log("DATA: ", data);
-    socket.emit("send_player_data", [data[socket.id]["isAdmin"], data[socket.id]["isReady"], data[socket.id]["realID"]]);
+    socket.emit("send_player_data", [data[socket.id]["isAdmin"], data[socket.id]["isReady"], data[socket.id]["realID"], data[socket.id]["score"]]);
   });
 
   socket.on("get_player_list", (room_id) => {
@@ -239,7 +275,7 @@ io.on("connection", (socket) => {
         await docRef.update({
           isAdmin: true,
         });
-        socket.to(nextAdmin).emit("send_player_data", [true, arr2[nextAdmin]["isReady"], arr2[nextAdmin]["realID"]]);
+        socket.to(nextAdmin).emit("send_player_data", [true, arr2[nextAdmin]["isReady"], arr2[nextAdmin]["realID"], arr2[nextAdmin]["score"]]);
       }
 
     }
