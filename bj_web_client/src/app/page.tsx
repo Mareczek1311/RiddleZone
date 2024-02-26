@@ -29,6 +29,8 @@ export default function Home() {
   const [playerData, setPlayerData] = useState<[boolean, boolean, string]>([false, false, "-1"]);
   const [questionSetSelected, setQuestionSetSelected] = useState(false);
   const [currQuestion, setCurrQuestion] = useState([]);
+  const [waitForPlayers, setWaitForPlayers] = useState(false);
+  const [isGameEnded, setisGameEnded] = useState(false);
 
   function updateUser(user: User | null) {
     setUser(user);
@@ -50,13 +52,13 @@ export default function Home() {
     });
 
     socket.emit("connect_to_room", room_id);
-    socket.on("get_room_id", (room_id: string) => {
+    socket.on("get_room_id", async (room_id: string) => {
       console.log("Room ID: ", room_id);
       updateRoomID(room_id);
-      socket.emit("get_player_list", room_id);
+      await socket.emit("get_player_list", room_id);
   
       
-      socket.emit("get_player_data", room_id);
+      await socket.emit("get_player_data", room_id);
       socket.on("send_player_data", (data: any) => {
         setPlayerData(data);
         console.log("PlayerData: ", data);
@@ -90,10 +92,19 @@ export default function Home() {
     socket.on("send_question", (question: any) => {
       console.log("Question: ", question);
       setCurrQuestion(question);
+      setWaitForPlayers(false);
     })
 
     socket.on("start_game", () => {
       updateStarted(true);
+    })
+
+    socket.on("wait_for_players", () => {
+      setWaitForPlayers(true);
+    })
+
+    socket.on("end_game", () => {
+      setisGameEnded(true);
     })
 
   }
@@ -113,7 +124,7 @@ export default function Home() {
       <Navbar />
 
       {user ? (
-        <>
+        <div>
           {room_id == "" ? (
             <MenuPage
               socket={socket}
@@ -136,14 +147,26 @@ export default function Home() {
               room_id={room_id}
             />
           ) : 
-          (
+            isGameEnded ? (
+              <div>
+                <h1>Game Ended</h1>
+              </div>
+            ) :
+
+            waitForPlayers ? (
+            
+            <div>
+              <h1>Waiting for players to answer</h1>
+            </div>
+
+            ) : (
             <QuestionPage
               socket={socket}
               room_id={room_id}
               currQuestion={currQuestion}
             />
           )}
-        </>
+        </div>
       ) : (
         <LoginPage updateUser={updateUser} />
       )}

@@ -8,9 +8,10 @@ interface QuestionPageProps {
 
 
 const QuestionPage: React.FC<QuestionPageProps> = ({socket, room_id, currQuestion}) => {
-
+ 
     function sendAnswer(answer: string) {
-        socket.emit('send_answer', room_id, answer);
+        socket.emit('send_answer', {room_id, answer});
+        
     }
 
     return(
@@ -35,6 +36,5 @@ const QuestionPage: React.FC<QuestionPageProps> = ({socket, room_id, currQuestio
         </div>
     )
 }
-
 
 export default QuestionPage;
