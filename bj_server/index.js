@@ -145,6 +145,26 @@ function countReady(arr) {
 io.on("connection", (socket) => {
   console.log("===!CONNECTION!===");
 
+
+
+  socket.on("connect_to_room", async (room_id) => {
+    console.log("===CONNECT_TO_ROOM===");
+
+    if (room_id == "") {
+      room_id = "room" + Math.floor(Math.random() * 1000);
+    }
+
+    socket.join(room_id);
+    socket.room_id = room_id;
+    console.log("ROOM ID: ", room_id);
+
+    await addPlayerToRoomFirebase(room_id, socket.id, -1);
+
+    await socket.emit("userCreated")
+
+    io.to(room_id).emit("get_room_id", room_id);
+  });
+
   socket.on("get_question_list", async (room_id) => {
     const docRef = db.collection("questions");
     const arr = [];
@@ -253,7 +273,20 @@ io.on("connection", (socket) => {
       
   
       } else {
+        
+        const rankingDoc = db.collection("rooms").doc(data.room_id).collection("players").orderBy("score", "desc");
+        const ranking = await rankingDoc.get().then(snapshot => {
+          const arr = [];
+          snapshot.forEach(doc => {
+            arr.push([doc.id, doc.data()["score"]]);
+          }
+          );
+          return arr;
+        });
+        
+      
         io.to(data.room_id).emit("end_game");
+        io.to(data.room_id).emit("send_ranking", ranking);
       }
 
       //update answered to 0
@@ -270,27 +303,19 @@ io.on("connection", (socket) => {
 
   })
 
-  socket.on("connect_to_room", async (room_id) => {
-    console.log("===CONNECT_TO_ROOM===");
-
-    if (room_id == "") {
-      room_id = "room" + Math.floor(Math.random() * 1000);
-    }
-
-    socket.join(room_id);
-    socket.room_id = room_id;
-    console.log("ROOM ID: ", room_id);
-
-    await addPlayerToRoomFirebase(room_id, socket.id, -1);
-
-    io.to(room_id).emit("get_room_id", room_id);
-  });
 
   socket.on("get_player_data", async (room_id) => {
-    const data = await getRoomPlayers(room_id);
+
+    const docRef = db.collection("rooms").doc(room_id).collection("players").doc(socket.id);
+    const doc = await docRef.get();
+
+    const data = doc.data();
+
     console.log("===GET_PLAYER_DATA===");
     console.log("DATA: ", data);
-    socket.emit("send_player_data", [data[socket.id]["isAdmin"], data[socket.id]["isReady"], data[socket.id]["realID"], data[socket.id]["score"]]);
+   
+    socket.emit("send_player_data", [data.isAdmin, data.isReady, data.realID, data.score]);
+  
   });
 
   socket.on("get_player_list", (room_id) => {
@@ -359,6 +384,12 @@ io.on("connection", (socket) => {
     }
     else{
       const room = io.sockets.adapter.rooms.get(socket.room_id);
+      
+      if(room == undefined){
+        deleteRoom(socket.room_id);
+        return;
+      }
+
       const playerList = Array.from(room);
 
       io.to(socket.room_id).emit("send_player_list", playerList);

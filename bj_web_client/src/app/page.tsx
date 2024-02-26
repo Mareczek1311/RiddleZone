@@ -15,6 +15,8 @@ import MenuPage from "./components/MenuPage/MenuPage";
 import LobbyPage from "./components/LobbyPage/LobbyPage";
 import QuestionPick from "./components/QuestionPick/QuestionPick";
 import QuestionPage from "./components/QuestionPage/QuestionPage";
+import MessagePage from "./components/MessagePage/MessagePage";
+import EndPage from "./components/EndPage/EndPage";
 
 var socket: any;
 socket = null;
@@ -31,6 +33,7 @@ export default function Home() {
   const [currQuestion, setCurrQuestion] = useState([]);
   const [waitForPlayers, setWaitForPlayers] = useState(false);
   const [isGameEnded, setisGameEnded] = useState(false);
+  const [ranking, setRanking] = useState([]);
 
   function updateUser(user: User | null) {
     setUser(user);
@@ -52,6 +55,11 @@ export default function Home() {
     });
 
     socket.emit("connect_to_room", room_id);
+    
+
+    //this create an error on frontend
+    await socket.on("userCreated")
+    
     socket.on("get_room_id", async (room_id: string) => {
       console.log("Room ID: ", room_id);
       updateRoomID(room_id);
@@ -107,6 +115,9 @@ export default function Home() {
       setisGameEnded(true);
     })
 
+    socket.on("send_ranking", (ranking: any) => {
+      setRanking(ranking);
+    })
   }
 
   useEffect(() => {
@@ -141,23 +152,30 @@ export default function Home() {
               updateStarted={updateStarted}
             />
           ) : 
-          !questionSetSelected ? (
+          !questionSetSelected ? 
+          playerData[0] ?
+          (
             <QuestionPick
               socket={socket}
               room_id={room_id}
             />
-          ) : 
+          ) 
+          : 
+          (
+            <MessagePage message="Waiting for the host to pick a question set" />
+          )
+          : 
             isGameEnded ? (
-              <div>
-                <h1>Game Ended</h1>
-              </div>
+              <EndPage
+                socket={socket}
+                room_id={room_id}
+                ranking={ranking}
+              />
             ) :
 
             waitForPlayers ? (
             
-            <div>
-              <h1>Waiting for players to answer</h1>
-            </div>
+              <MessagePage message="Waiting for players to answer" />
 
             ) : (
             <QuestionPage
