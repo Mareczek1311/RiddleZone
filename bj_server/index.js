@@ -46,7 +46,7 @@ async function addPlayerToRoomFirebase(room_id, player_id, real_player_id) {
         {
           isAdmin: true,
           isReady: false,
-          realID: -1,
+          realID: real_player_id,
           score: 0,
         }
       )
@@ -58,7 +58,7 @@ async function addPlayerToRoomFirebase(room_id, player_id, real_player_id) {
         {
           isAdmin: false,
           isReady: false,
-          realID: -1,
+          realID: real_player_id,
           score: 0,
         }
       )
@@ -147,21 +147,20 @@ io.on("connection", (socket) => {
 
 
 
-  socket.on("connect_to_room", async (room_id) => {
+  socket.on("connect_to_room", async (data) => {
     console.log("===CONNECT_TO_ROOM===");
 
-    if (room_id == "") {
-      room_id = "room" + Math.floor(Math.random() * 1000);
+    if (data.room_id == "") {
+      data.room_id = "room" + Math.floor(Math.random() * 1000);
     }
 
-    socket.join(room_id);
-    socket.room_id = room_id;
-    console.log("ROOM ID: ", room_id);
+    socket.join(data.room_id);
+    socket.data.room_id = data.room_id;
+    console.log("ROOM ID: ", data.room_id);
 
-    await addPlayerToRoomFirebase(room_id, socket.id, -1);
+    await addPlayerToRoomFirebase(data.room_id, socket.id, data.nickname);
 
-
-    io.to(room_id).emit("get_room_id", room_id);
+    io.to(data.room_id).emit("get_room_id", data.room_id);
   });
 
   socket.on("restart_game", async (room_id) => {
@@ -184,6 +183,7 @@ io.on("connection", (socket) => {
       snapshot.forEach(doc => {
         docRef2.doc(doc.id).update({
           score: 0,
+          isReady: false,
         });
       });
     });
@@ -304,7 +304,7 @@ io.on("connection", (socket) => {
         const ranking = await rankingDoc.get().then(snapshot => {
           const arr = [];
           snapshot.forEach(doc => {
-            arr.push([doc.id, doc.data()["score"]]);
+            arr.push([doc.data()["realID"], doc.data()["score"]]);
           }
           );
           return arr;
@@ -346,12 +346,24 @@ io.on("connection", (socket) => {
 
   socket.on("get_player_list", (room_id) => {
     console.log("===GET_PLAYER_LIST===");
-
+/*
     const room = io.sockets.adapter.rooms.get(room_id);
     const playerList = Array.from(room);
 
     io.to(room_id).emit("send_player_list", playerList);
     console.log("PLAYER LIST: ", playerList);
+    */
+
+    const docRef = db.collection("rooms").doc(room_id).collection("players");
+
+    docRef.get().then(snapshot => {
+      const arr = [];
+      snapshot.forEach(doc => {
+        arr.push(doc.data()["realID"]);
+      });
+      io.to(room_id).emit("send_player_list", arr);
+    });
+
   });
 
   socket.on("set_state", async (data) => {

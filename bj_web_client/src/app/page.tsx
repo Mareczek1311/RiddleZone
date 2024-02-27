@@ -47,14 +47,19 @@ export default function Home() {
     setIsStarted(started);
   }
 
-  const ConnectToRoom = async (room_id: string) => {
+  const ConnectToRoom = async (room_id: string, nickname: string) => {
+
+    if(nickname == ""){
+      return;
+    }
+
     console.log("Connecting to room: ", room_id);
     socket = await io("http://localhost:3001");
     socket.on("connect", () => {
       console.log("Connected to server");
     });
 
-    socket.emit("connect_to_room", room_id);
+    socket.emit("connect_to_room", { room_id, nickname });
     
 
     socket.on("get_room_id", async (room_id: string) => {
@@ -121,7 +126,7 @@ export default function Home() {
       setQuestionSetSelected(false);
       updateStarted(false);
       setWaitForPlayers(false);
-      
+      setReadyCounter(0);
     })
   }
 
