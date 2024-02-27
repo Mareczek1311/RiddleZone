@@ -57,9 +57,6 @@ export default function Home() {
     socket.emit("connect_to_room", room_id);
     
 
-    //this create an error on frontend
-    await socket.on("userCreated")
-    
     socket.on("get_room_id", async (room_id: string) => {
       console.log("Room ID: ", room_id);
       updateRoomID(room_id);
@@ -118,6 +115,14 @@ export default function Home() {
     socket.on("send_ranking", (ranking: any) => {
       setRanking(ranking);
     })
+
+    socket.on("restart_game", () =>{
+      setisGameEnded(false);
+      setQuestionSetSelected(false);
+      updateStarted(false);
+      setWaitForPlayers(false);
+      
+    })
   }
 
   useEffect(() => {
@@ -170,6 +175,7 @@ export default function Home() {
                 socket={socket}
                 room_id={room_id}
                 ranking={ranking}
+                playerData={playerData}
               />
             ) :
 
