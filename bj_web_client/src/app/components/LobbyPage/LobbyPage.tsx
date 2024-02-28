@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./LobbyPage.css";
+import "../../globals.css";
 
 interface LobbyPageProps {
   socket: any;

@@ -4,6 +4,7 @@
   for every button click we need to do a loading screen
 */
 
+import './globals.css';
 import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar/Navbar";
 import { io } from "socket.io-client";
@@ -141,7 +142,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
+    <div className="App">
       <Navbar />
 
       {user ? (
