@@ -50,48 +50,47 @@ const MenuPage: React.FC<MenuPageProps> = ({
               <h4 className="input-description">ROOM ID</h4>
               <input
                 type="text"
-                placeholder="Enter your nickname"
+                placeholder="Enter room id"
                 value={inputValue2}
-                onChange={handleInputChange2}
+                onChange={handleInputChange}
               />
             </div>
           )}
         </div>
         <div className="JoinRoomSection">
           <div className="menuPage_button-wrapper">
-
-          <div
-            onClick={() => {
-              setModalSet("joinroom");
-            }}
+            <div
+              onClick={() => {
+                setModalSet("joinroom");
+              }}
             >
-            <button
-              className="mainSectionButton"
-              onClick={() => ConnectToRoom(inputValue, inputValue2)}
+              <button
+                className="mainSectionButton"
+                onClick={() => ConnectToRoom(inputValue, inputValue2)}
               >
-              <h2 className="button-text">JOIN A ROOM</h2>
-            </button>
-          </div>
-          <div
-            onClick={() => {
-              setModalSet("createroom");
-            }}
-            >
-            <button
-              className="mainSectionButton"
-              onClick={() => ConnectToRoom("", inputValue2)}
-              >
-              <h2 className="button-text"> CREATE A ROOM </h2>
-            </button>
-          </div>
+                <h2 className="button-text">JOIN A ROOM</h2>
+              </button>
             </div>
+            <div
+              onClick={() => {
+                setModalSet("createroom");
+              }}
+            >
+              <button
+                className="mainSectionButton"
+                onClick={() => ConnectToRoom(inputValue, inputValue2)}
+              >
+                <h2 className="button-text"> CREATE A ROOM </h2>
+              </button>
+            </div>
+          </div>
           <div className="exit-wrapper">
             {modalSet !== "" && (
               <button
-              className="exitButton"
-              onClick={() => {
-                setModalSet("");
-              }}
+                className="exitButton"
+                onClick={() => {
+                  setModalSet("");
+                }}
               >
                 <h2 className="button-text">EXIT</h2>
               </button>

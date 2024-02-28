@@ -49,33 +49,43 @@ export default function Home() {
   }
 
   const ConnectToRoom = async (room_id: string, nickname: string) => {
+    socket = await io("http://localhost:3001");
 
+
+    /*
     if(nickname == ""){
       return;
     }
+    */
+   
+    //LINE THAT NEEDS TO BE REMOVED
+    nickname = "PLAYER" + Math.floor(Math.random() * 1000); 
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     console.log("Connecting to room: ", room_id);
-    socket = await io("http://localhost:3001");
-    socket.on("connect", () => {
+    socket.on("connect", async () => {
       console.log("Connected to server");
-    });
-
-    socket.emit("connect_to_room", { room_id, nickname });
+      socket.emit("connect_to_room", { room_id, nickname });
     
 
-    socket.on("get_room_id", async (room_id: string) => {
-      console.log("Room ID: ", room_id);
-      updateRoomID(room_id);
-      await socket.emit("get_player_list", room_id);
-  
-      
-      await socket.emit("get_player_data", room_id);
-      socket.on("send_player_data", (data: any) => {
-        setPlayerData(data);
-        console.log("PlayerData: ", data);
-      });
+      socket.on("get_room_id", async (room_id: string) => {
+        console.log("Room ID: ", room_id);
+        updateRoomID(room_id);
+    
+        
+        await socket.emit("get_player_data", room_id);
+        socket.on("send_player_data", (data: any) => {
+          setPlayerData(data);
+          console.log("PlayerData: ", data);
+        });
 
+        
+        await socket.emit("get_player_list", room_id);
+  
+      });
     });
+
+   
   };
   
   if(socket != null){
