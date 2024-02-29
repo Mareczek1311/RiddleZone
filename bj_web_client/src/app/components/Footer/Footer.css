@@ -1,10 +1,47 @@
 .footer {
-    height: 12vh;
+    position: relative;
+    width: 100%;
+    height: 30vh;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    border-top: 3px solid black;
+    flex-direction: column;
+    padding: 1% 1%;
+
 }
 
 .footer_container {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    
+    flex-direction: column;
+    margin-top: 1%;
+}
+
+.footer-line {
+    content: "";
+    position: absolute;
+    background-color: black;
+    height: 3px;
+    border-radius: 4px;
+    z-index: 100;
+}
+
+.footer-line:hover {
+    background-color: red;
+}
+
+
+.line_big {
+    width: 50%;
+    left: 25%;
+    top: -8%;
+}
+
+.line_small {
+    width: 25%;
+    left: 37.5%;
+    top: -16%;
 }
