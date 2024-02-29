@@ -1,21 +1,12 @@
 import React from 'react';
-import styles from './Footer.module.css'; // Załóżmy, że masz osobny plik CSS dla styli footera
+import {motion} from "framer-motion";
+import './Footer.css';
 
 export default function Footer() {
   return (
-    <footer className={styles.footer}>
-      <div className={styles.footerContent}>
-        <p>QUIZ!?.</p>
-        <nav>
-          <ul className={styles.footerLinks}>
-            <li><a href="#">GITHUB</a></li>
-            <li><a href="#">Kontakt</a></li>
-          </ul>
-        </nav>
-      </div>
-      <div className={styles.footerBottom}>
-        <p>&copy; {new Date().getFullYear()} QUIZ!?. Wszelkie prawa zastrzeżone.</p>
-      </div>
-    </footer>
+    <motion.footer className="footer">
+      <motion.div className='footer_container'>
+      </motion.div>  
+    </motion.footer>
   );
 }
