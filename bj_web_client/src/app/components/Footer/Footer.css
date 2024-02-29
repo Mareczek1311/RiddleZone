@@ -1,0 +1,10 @@
+.footer {
+    height: 12vh;
+}
+
+.footer_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
