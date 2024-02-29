@@ -6,6 +6,7 @@ export default function Footer() {
   return (
     <motion.footer className="footer">
       <motion.div className='footer_container'>
+        <motion.div></motion.div>
       </motion.div>  
     </motion.footer>
   );
