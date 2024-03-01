@@ -18,6 +18,7 @@ import QuestionPick from "./components/QuestionPick/QuestionPick";
 import QuestionPage from "./components/QuestionPage/QuestionPage";
 import MessagePage from "./components/MessagePage/MessagePage";
 import EndPage from "./components/EndPage/EndPage";
+import { useNavigation } from "react-router-dom";
 
 var socket: any;
 socket = null;
@@ -151,9 +152,14 @@ export default function Home() {
     };
   }, []);
 
+  
+  const [isOnMainPage, setIsOnMainPage] = useState(true);
+  useEffect(() => {
+    room_id === "" ? setIsOnMainPage(true) : setIsOnMainPage(false);
+  }, [room_id])
   return (
     <div className="App">
-      <Navbar />
+      <Navbar isOnMainPage={isOnMainPage} />
 
       {user ? (
         <div>

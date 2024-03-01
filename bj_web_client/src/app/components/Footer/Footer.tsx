@@ -24,8 +24,9 @@ export default function Footer() {
     variants={footerVariants}
     initial={controls}
     animate={controls}
+    transition={{ type: "ease" }}
     >
-    <motion.div className="backdrop" style={{ opacity: isOpen ? 1 : 0 }} />
+    <motion.div className="backdrop" style={{ opacity: isOpen ? 1 : 0 }}/>
       <div className="footer-wrapper">
           <h5 className="grey-text" style={{ height: isOpen ? "0%" : "100%", opacity: isOpen ? 0 : 1 }}>INFORMATIONS</h5>
       <motion.div className="line-wrapper" onClick={() => {setIsOpen(!isOpen)} } >
