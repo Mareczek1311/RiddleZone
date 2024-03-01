@@ -1,0 +1,139 @@
+.MainSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+.ManageSection {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 4% 0;
+}
+
+.section-title {
+    margin-bottom: 4%;
+}
+
+.players-title {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 4px;
+    color: rgba(0, 0, 0, 0.767);
+}
+
+.title {
+    font-size: 3em;
+    font-weight: 900;
+    color: black;
+    text-align: center;
+}
+
+.main_box_container {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    width: 100%;
+    height: auto;
+    margin-bottom: 4%;
+
+}
+
+.admin_player_container {
+    width: 10%;
+    min-height: 30vh;
+    border-left: 4px solid black;
+    border-bottom: 4px solid black;
+    border-top: 4px solid black;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    padding: 1% 0%;
+}
+
+.admin_player_img-wrapper {
+    margin: 5% 2%;
+}
+
+.admin_player_img {
+    width: 56px;
+    height: 56px;
+}
+
+.admin_level {
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.admin_name {
+    font-size: 12px;
+    font-weight: 900;
+    margin-bottom: 12px;
+}
+
+.players_container {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: column;
+    border: 4px solid black;
+    min-width: 420px;
+    width: 42vw;
+    min-height: 30vh;
+    height: auto;
+    padding: 1% 1% 0 1%;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.player-wrapper {
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    gap: 4%;
+    width: 100%;
+    margin-bottom: 2%;
+    border-radius: 5px;
+    padding-left: 1%;
+}
+
+.player-wrapper-ex {
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    gap: 4%;
+    width: 100%;
+    margin-bottom: 2%;
+    padding: 0% 0% 1% 0%;
+    border-bottom: 4px solid black;
+}
+
+.player-value-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    text-align: start;
+    align-items: center;
+    border-bottom: 4px solid black;
+}
+
+.player-value-wrapper-ex {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    text-align: start;
+    align-items: center;
+}
+
+.player-value {
+}
+
+.lobby_buttons-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    gap: 5%;
+}

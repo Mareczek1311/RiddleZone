@@ -1,5 +1,6 @@
 import { io } from "socket.io-client";
 import "./MenuPage.css";
+import { motion } from "framer-motion";
 
 import React, { useState } from "react";
 
@@ -64,12 +65,12 @@ const MenuPage: React.FC<MenuPageProps> = ({
                 setModalSet("joinroom");
               }}
             >
-              <button
+              <motion.button
                 className="mainSectionButton"
                 onClick={() => ConnectToRoom(inputValue, inputValue2)}
               >
-                <h2 className="button-text">JOIN A ROOM</h2>
-              </button>
+                <h2 className="button-text_Menu" style={{ letterSpacing: modalSet == "createroom" ? "6px" : undefined }}>JOIN A ROOM</h2>
+              </motion.button>
             </div>
             <div
               onClick={() => {
@@ -80,7 +81,7 @@ const MenuPage: React.FC<MenuPageProps> = ({
                 className="mainSectionButton"
                 onClick={() => ConnectToRoom(inputValue, inputValue2)}
               >
-                <h2 className="button-text"> CREATE A ROOM </h2>
+                <motion.h2 className="button-text_Menu" style={{ letterSpacing: modalSet == "createroom" ? "6px" : undefined }}> CREATE A ROOM </motion.h2>
               </button>
             </div>
           </div>
