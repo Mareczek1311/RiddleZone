@@ -9,11 +9,11 @@
 .App {
   position: relative;
   background-color: rgb(241, 240, 234);
-  min-height: 100vh;
+  height: 100vh;
   font-family: 'Inter', sans-serif;
   z-index: 0;
-  overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-y: hidden !important;
+  overflow-x: hidden !important;
 }
 
 .App:after {
