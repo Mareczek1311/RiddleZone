@@ -16,7 +16,7 @@ RiddleZone is an immersive multiplayer online game designed to bring the excitem
 
 ## Contributing
 
-Contributions are welcome! Whether it's adding new features, fixing bugs, or improving documentation, your contributions help make RiddleZone better for everyone. Please refer to the [contribution guidelines](link-to-contribution-guidelines) for more information.
+Contributions are welcome! Whether it's adding new features, fixing bugs, or improving documentation, your contributions help make RiddleZone better for everyone.
 
 ## Upcoming Features
 
