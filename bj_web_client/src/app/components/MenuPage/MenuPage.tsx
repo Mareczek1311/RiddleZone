@@ -3,6 +3,7 @@ import "./MenuPage.css";
 import { motion } from "framer-motion";
 
 import React, { useState } from "react";
+import { set } from "firebase/database";
 
 interface MenuPageProps {
   updateRoomID: (newValue: string) => void;
@@ -20,6 +21,7 @@ const MenuPage: React.FC<MenuPageProps> = ({
   //inputValue2 - nickname
   const [inputValue, setInputValue] = useState("");
   const [inputValue2, setInputValue2] = useState("");
+  const [isClicked, setIsClicked] = useState(false);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -32,10 +34,18 @@ const MenuPage: React.FC<MenuPageProps> = ({
   //przejiesc to wyzej
 
   function buttonHandler() {
+    if (isClicked) {
+      return;
+    }
+
     if (modalSet == "joinroom") {
+      setIsClicked(true);
+
       ConnectToRoom(inputValue, inputValue2);
     }
     if (modalSet == "createroom") {
+      setIsClicked(true);
+
       ConnectToRoom(inputValue, inputValue2);
     }
   }
@@ -74,7 +84,7 @@ const MenuPage: React.FC<MenuPageProps> = ({
                 <h2
                   className="button-text_Menu"
                   style={{
-                    letterSpacing: modalSet == "createroom" ? "6px" : undefined,
+                    letterSpacing: modalSet == "joinroom" ? "6px" : undefined,
                   }}
                 >
                   JOIN A ROOM
