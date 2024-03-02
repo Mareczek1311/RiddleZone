@@ -394,6 +394,12 @@ io.on("connection", (socket) => {
     console.log("===GET_PLAYER_DATA===");
     console.log("DATA: ", data);
 
+    if(data == undefined){
+      socket.emit("error_send_player_data", "Player not found");
+      return;
+    }
+
+
     socket.emit("send_player_data", [
       data.isAdmin,
       data.isReady,
