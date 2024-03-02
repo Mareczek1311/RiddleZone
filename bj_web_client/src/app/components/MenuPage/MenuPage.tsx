@@ -15,6 +15,9 @@ const MenuPage: React.FC<MenuPageProps> = ({
   socket,
   ConnectToRoom,
 }) => {
+
+  //inputValue - roomid
+  //inputValue2 - nickname
   const [inputValue, setInputValue] = useState("");
   const [inputValue2, setInputValue2] = useState("");
 
@@ -28,6 +31,15 @@ const MenuPage: React.FC<MenuPageProps> = ({
 
   //przejiesc to wyzej
 
+  function buttonHandler() {
+    if (modalSet == "joinroom") {
+      ConnectToRoom(inputValue, inputValue2);
+    }
+    if (modalSet == "createroom") {
+      ConnectToRoom(inputValue, inputValue2);
+    }
+  }
+
   // jezeli jest join a room to jest room id do otawrcia etc.
   const [modalSet, setModalSet] = useState("");
 
@@ -35,7 +47,7 @@ const MenuPage: React.FC<MenuPageProps> = ({
     <div className="MainSection">
       <div className="ManageSection">
         <div className="rooms_container">
-          {modalSet == "joinroom" && (
+          {(modalSet == "joinroom" || modalSet == "createroom") && (
             <div className="input-wrapper">
               <h4 className="input-description">ROOM ID</h4>
               <input
@@ -46,17 +58,7 @@ const MenuPage: React.FC<MenuPageProps> = ({
               />
             </div>
           )}
-          {modalSet == "createroom" && (
-            <div className="input-wrapper">
-              <h4 className="input-description">ROOM ID</h4>
-              <input
-                type="text"
-                placeholder="Enter room id"
-                value={inputValue2}
-                onChange={handleInputChange}
-              />
-            </div>
-          )}
+          
         </div>
         <div className="JoinRoomSection">
           <div className="menuPage_button-wrapper">
@@ -67,9 +69,16 @@ const MenuPage: React.FC<MenuPageProps> = ({
             >
               <motion.button
                 className="mainSectionButton"
-                onClick={() => ConnectToRoom(inputValue, inputValue2)}
+                onClick={buttonHandler}
               >
-                <h2 className="button-text_Menu" style={{ letterSpacing: modalSet == "createroom" ? "6px" : undefined }}>JOIN A ROOM</h2>
+                <h2
+                  className="button-text_Menu"
+                  style={{
+                    letterSpacing: modalSet == "createroom" ? "6px" : undefined,
+                  }}
+                >
+                  JOIN A ROOM
+                </h2>
               </motion.button>
             </div>
             <div
@@ -77,11 +86,16 @@ const MenuPage: React.FC<MenuPageProps> = ({
                 setModalSet("createroom");
               }}
             >
-              <button
-                className="mainSectionButton"
-                onClick={() => ConnectToRoom(inputValue, inputValue2)}
-              >
-                <motion.h2 className="button-text_Menu" style={{ letterSpacing: modalSet == "createroom" ? "6px" : undefined }}> CREATE A ROOM </motion.h2>
+              <button className="mainSectionButton" onClick={buttonHandler}>
+                <motion.h2
+                  className="button-text_Menu"
+                  style={{
+                    letterSpacing: modalSet == "createroom" ? "6px" : undefined,
+                  }}
+                >
+                  {" "}
+                  CREATE A ROOM{" "}
+                </motion.h2>
               </button>
             </div>
           </div>

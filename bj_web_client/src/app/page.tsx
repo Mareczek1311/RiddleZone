@@ -75,13 +75,8 @@ export default function Home() {
     
         
         await socket.emit("get_player_data", room_id);
-        socket.on("send_player_data", (data: any) => {
-          setPlayerData(data);
-          console.log("PlayerData: ", data);
-        });
 
-        
-        await socket.emit("get_player_list", room_id);
+                
   
       });
     });
@@ -100,9 +95,17 @@ export default function Home() {
       console.log("PlayerList: ", playerList);
     });
 
+    socket.on("error_send_player_data", (data: any) => {
+      console.log("Error: ", data);
+      socket.emit("get_player_data", room_id);
+    })
+
+
     socket.on("send_player_data", (data: any) => {
       setPlayerData(data);
       console.log("PlayerData: ", data);
+
+        socket.emit("get_player_list", room_id);
     });
 
     socket.on("send_questionSet", () => {
@@ -161,7 +164,10 @@ export default function Home() {
     <div className="App">
       <Navbar isOnMainPage={isOnMainPage} />
 
-      {user ? (
+      {
+      //user 
+      true
+      ? (
         <div>
           {room_id == "" ? (
             <MenuPage
