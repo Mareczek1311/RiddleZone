@@ -283,7 +283,9 @@ io.on("connection", (socket) => {
       socket.emit("error_send_question", "Question not found");
       return;
     }
-    
+
+    const questionData = undefined
+    try{
     const questionData = [
       question.data()["name"],
       question.data()["a"],
@@ -291,6 +293,16 @@ io.on("connection", (socket) => {
       question.data()["c"],
       question.data()["d"],
     ];
+  }
+  catch(err){
+    console.log("ERROR: ", err);
+    socket.emit("error_send_question", "Question not found");
+
+  }
+  if(questionData == undefined){
+    socket.emit("error_send_question", "Question not found");
+    return;
+  }
 
     console.log("SENDING QUESTION: ", questionData);
 
