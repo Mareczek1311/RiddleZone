@@ -24,7 +24,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({socket, room_id, currQuestio
 
             {
                 
-                waitForPlayers ?
+                !(correct_answer == "") ?
             <div className="question-page-container">
                 {
                     "a" === correct_answer ?

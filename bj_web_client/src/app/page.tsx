@@ -51,7 +51,7 @@ export default function Home() {
   }
 
   const ConnectToRoom = async (room_id: string, nickname: string) => {
-    socket = await io("https://vv1753wm-3001.euw.devtunnels.ms/");
+    socket = await io("localhost:3001");
 
 
     /*
@@ -134,6 +134,7 @@ export default function Home() {
       console.log("Question: ", question);
       setCurrQuestion(question);
       setWaitForPlayers(false);
+      setCorrect_answer("");
     })
 
     socket.on("start_game", () => {
@@ -158,6 +159,8 @@ export default function Home() {
       updateStarted(false);
       setWaitForPlayers(false);
       setReadyCounter(0);
+      setCorrectQuestion(false);
+      setCorrect_answer("");
     })
   }
 

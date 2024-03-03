@@ -277,16 +277,16 @@ io.on("connection", (socket) => {
       .collection("questions")
       .doc(currQuestion.toString());
 
-    const question = await questionRef.get();
+    var question = await questionRef.get();
 
     if(question == undefined){
       socket.emit("error_send_question", "Question not found");
       return;
     }
 
-    const questionData = undefined
+    var questionData = undefined
     try{
-    const questionData = [
+    questionData = [
       question.data()["name"],
       question.data()["a"],
       question.data()["b"],
@@ -349,11 +349,6 @@ io.on("connection", (socket) => {
       socket.emit("wrong_answer", correctAnswer);
     }
 
-    //wait 3 seconds
-    await setTimeout(() => {
-      console.log("3 seconds passed");
-    }, 3000);
-
     const RoomData = await docRefRoomQuestionsSet.get();
 
     console.log("ANSWERED: ", RoomData.data()["answered"]);
@@ -394,9 +389,12 @@ io.on("connection", (socket) => {
           });
           return arr;
         });
+        
+        setTimeout(() => {
+          io.to(data.room_id).emit("end_game");
+          io.to(data.room_id).emit("send_ranking", ranking);
+        }, 3000);
 
-        io.to(data.room_id).emit("end_game");
-        io.to(data.room_id).emit("send_ranking", ranking);
       }
 
       //update answered to 0
