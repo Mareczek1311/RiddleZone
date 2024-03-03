@@ -531,6 +531,6 @@ app.get("/", async (req, res) => {
   console.log("GET /");
 });
 
-server.listen(3002, () => {
+server.listen(3001, () => {
   console.log("server running at http://localhost:3001");
 });
