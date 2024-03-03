@@ -38,12 +38,12 @@ const MenuPage: React.FC<MenuPageProps> = ({
       return;
     }
 
-    if (modalSet == "joinroom") {
+    if (modalSet == "joinroom" && isClicked == false) {
       setIsClicked(true);
 
       ConnectToRoom(inputValue, inputValue2);
     }
-    if (modalSet == "createroom") {
+    if (modalSet == "createroom" && isClicked == false) {
       setIsClicked(true);
 
       ConnectToRoom(inputValue, inputValue2);
@@ -79,7 +79,7 @@ const MenuPage: React.FC<MenuPageProps> = ({
             >
               <motion.button
                 className="button"
-                onClick={buttonHandler}
+                onClick={() => {buttonHandler()}}
               >
                 <h2
                   className="button-text"
@@ -96,7 +96,7 @@ const MenuPage: React.FC<MenuPageProps> = ({
                 setModalSet("createroom");
               }}
             >
-              <button className="button" onClick={buttonHandler}>
+              <button className="button" onClick={() => {buttonHandler()}}>
                 <motion.h2
                   className="button-text"
                   style={{

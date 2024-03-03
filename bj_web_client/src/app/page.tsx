@@ -5,7 +5,7 @@
 */
 
 import './globals.css';
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Navbar from "./components/Navbar/Navbar";
 import { io } from "socket.io-client";
 import Footer from "./components/Footer/Footer";
@@ -81,7 +81,7 @@ export default function Home() {
 
    
   };
-  
+  useEffect(() => {
   if(socket != null){
     socket.on("correct_answer", (data: any) => {
       console.log("Correct answer")
@@ -163,6 +163,8 @@ export default function Home() {
       setCorrect_answer("");
     })
   }
+  }
+  , [socket]);
 
   useEffect(() => {
     // Na unmountu komponentu rozłączamy socket
