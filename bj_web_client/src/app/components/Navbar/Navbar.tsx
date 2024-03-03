@@ -17,7 +17,7 @@ const NavBar: React.FC<NavBarProps> = ({
     return(
       <div className="navbar" style={{ paddingBottom: isOnMainPage ? "auto" : "10vh" }}>
         <div className="navbar_container">
-          <h1 className="navbar-title" style={{ position: isOnMainPage ? "inherit" : "absolute",  left: isOnMainPage ? 0 : "1vw",  top: isOnMainPage ? 0 : "0vw" }}>RIDDLES</h1>
+          <h1 className="navbar-title" style={{ scale: isOnMainPage ? 1 : 0.7 }}>RIDDLES</h1>
         </div>
      </div>
     )

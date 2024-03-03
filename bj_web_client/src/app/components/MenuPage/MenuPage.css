@@ -9,8 +9,8 @@
 
 .ManageSection{
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    align-items: center !important;
+    justify-content: space-between !important;
     flex-direction: column;
     height: auto;
     min-height: 50%;
@@ -38,7 +38,7 @@
     width: auto;
     min-width: 240px;
     height: auto;
-    margin: 0 0;
+    margin: 24px 24px;
     padding: 0 0;
 }
 
@@ -82,7 +82,7 @@
     width: auto;
     min-width: 100px;
     height: auto;
-    margin: 0 0;
+    margin: 1% 1%;
     padding: 0 0;
 }
 
@@ -99,3 +99,56 @@
     justify-content: center;
     align-items: center;
 }
+
+/* Style podstawowe - tutaj nic się nie zmienia */
+
+/* Responsywność dla urządzeń mobilnych */
+@media (max-width: 600px) {
+    .MainSection, .ManageSection {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .rooms_container, .JoinRoomSection {
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .mainSectionButton, .exitButton {
+      min-width: 80%; /* Zwiększa przyciski, aby były łatwiejsze do naciśnięcia na urządzeniach mobilnych */
+    }
+  
+    .menuPage_button-wrapper {
+      flex-direction: column; /* Stosuje przyciski wertykalnie dla lepszej widoczności */
+    }
+  }
+  
+  /* Responsywność dla tabletów */
+  @media (min-width: 601px) and (max-width: 1024px) {
+    .MainSection, .ManageSection {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .rooms_container, .JoinRoomSection {
+      width: 80%;
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .mainSectionButton, .exitButton {
+      min-width: 60%;
+    }
+  
+    .menuPage_button-wrapper {
+      flex-direction: row; /* Zachowuje przyciski poziomo, ale z większym odstępem */
+      justify-content: space-around;
+    }
+  }
+  
+  /* Opcjonalnie, style dla dużych ekranów, jeśli jest taka potrzeba */
+  @media (min-width: 1025px) {
+    /* Tutaj możesz dostosować style, jeśli chcesz mieć szczególne ustawienia dla bardzo dużych ekranów */
+  }
+  
