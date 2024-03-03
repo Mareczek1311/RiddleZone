@@ -1,10 +1,14 @@
-.thinner {
-}
-
 .question-page-container {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
     width: 33%;
+}
+.question-page-answer-correct{
+    color: green;
+}
+
+.question-page-answer{
+    color: red;
 }
