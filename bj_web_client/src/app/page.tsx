@@ -90,6 +90,12 @@ export default function Home() {
       console.log("Ready Counter: ", data);
     });
 
+    socket.on("error_send_question", () => {
+      console.log("Error: ", "No question set selected");
+      socket.emit("get_question", room_id);
+      
+    })
+
     socket.on("send_player_list", (playerList: []) => {
       setPlayerList(playerList);
       console.log("PlayerList: ", playerList);

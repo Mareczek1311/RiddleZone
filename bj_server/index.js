@@ -279,6 +279,11 @@ io.on("connection", (socket) => {
 
     const question = await questionRef.get();
 
+    if(question == undefined){
+      socket.emit("error_send_question", "Question not found");
+      return;
+    }
+    
     const questionData = [
       question.data()["name"],
       question.data()["a"],
