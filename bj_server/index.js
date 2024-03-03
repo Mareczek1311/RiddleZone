@@ -327,10 +327,20 @@ io.on("connection", (socket) => {
     });
 
     if (data.answer == correctAnswer) {
+      socket.emit("correct_answer", correctAnswer);
+
       await docRefRoomPlayer.update({
         score: admin.firestore.FieldValue.increment(1),
       });
     }
+    else{
+      socket.emit("wrong_answer", correctAnswer);
+    }
+
+    //wait 3 seconds
+    await setTimeout(() => {
+      console.log("3 seconds passed");
+    }, 3000);
 
     const RoomData = await docRefRoomQuestionsSet.get();
 
@@ -521,6 +531,6 @@ app.get("/", async (req, res) => {
   console.log("GET /");
 });
 
-server.listen(3001, () => {
+server.listen(3002, () => {
   console.log("server running at http://localhost:3001");
 });

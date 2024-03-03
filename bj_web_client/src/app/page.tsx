@@ -8,7 +8,6 @@ import './globals.css';
 import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar/Navbar";
 import { io } from "socket.io-client";
-import Games from "./components/QuizPage/QuizPage";
 import Footer from "./components/Footer/Footer";
 import { User } from "firebase/auth";
 import LoginPage from "./components/LoginPage/LoginPage";
@@ -18,7 +17,6 @@ import QuestionPick from "./components/QuestionPick/QuestionPick";
 import QuestionPage from "./components/QuestionPage/QuestionPage";
 import MessagePage from "./components/MessagePage/MessagePage";
 import EndPage from "./components/EndPage/EndPage";
-import { useNavigation } from "react-router-dom";
 
 var socket: any;
 socket = null;
@@ -36,6 +34,9 @@ export default function Home() {
   const [waitForPlayers, setWaitForPlayers] = useState(false);
   const [isGameEnded, setisGameEnded] = useState(false);
   const [ranking, setRanking] = useState([]);
+  const [correctQuestion, setCorrectQuestion] = useState(false);
+  const [correct_answer, setCorrect_answer] = useState("");
+
 
   function updateUser(user: User | null) {
     setUser(user);
@@ -50,7 +51,7 @@ export default function Home() {
   }
 
   const ConnectToRoom = async (room_id: string, nickname: string) => {
-    socket = await io("https://vv1753wm-3001.euw.devtunnels.ms/");
+    socket = await io("localhost:3002");
 
 
     /*
@@ -72,11 +73,8 @@ export default function Home() {
       socket.on("get_room_id", async (room_id: string) => {
         console.log("Room ID: ", room_id);
         updateRoomID(room_id);
-    
         
         await socket.emit("get_player_data", room_id);
-
-                
   
       });
     });
@@ -85,6 +83,18 @@ export default function Home() {
   };
   
   if(socket != null){
+    socket.on("correct_answer", (data: any) => {
+      console.log("Correct answer")
+      setCorrectQuestion(true);
+      setCorrect_answer(data);
+    })
+
+    socket.on("wrong_answer", (data :any) => {
+      console.log("Wrong answer")
+      setCorrectQuestion(false);
+      setCorrect_answer(data);
+    })
+
     socket.on("update_ready", (data: any) => {
       setReadyCounter(data);
       console.log("Ready Counter: ", data);
@@ -213,17 +223,14 @@ export default function Home() {
               />
             ) :
 
-            waitForPlayers ? (
-            
-              <MessagePage message="Waiting for players to answer" />
-
-            ) : (
             <QuestionPage
               socket={socket}
               room_id={room_id}
               currQuestion={currQuestion}
+              waitForPlayers={waitForPlayers}
+              correct_answer={correct_answer}
             />
-          )}
+          }
         </div>
       ) : (
         <LoginPage updateUser={updateUser} />
