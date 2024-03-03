@@ -9,16 +9,6 @@ interface QuestionPageProps {
     correct_answer: string;
 }
 
-const QuestionPage: React.FC<QuestionPageProps> = ({
-  socket,
-  room_id,
-  currQuestion,
-}) => {
-  function sendAnswer(answer: string) {
-    socket.emit("send_answer", { room_id, answer });
-  }
-
-
 const QuestionPage: React.FC<QuestionPageProps> = ({socket, room_id, currQuestion, waitForPlayers, correct_answer}) => {
  
     function sendAnswer(answer: string) {
@@ -133,4 +123,3 @@ const QuestionPage: React.FC<QuestionPageProps> = ({socket, room_id, currQuestio
 }
 
 export default QuestionPage;
-
