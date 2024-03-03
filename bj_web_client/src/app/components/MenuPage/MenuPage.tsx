@@ -78,11 +78,11 @@ const MenuPage: React.FC<MenuPageProps> = ({
               }}
             >
               <motion.button
-                className="mainSectionButton"
+                className="button"
                 onClick={buttonHandler}
               >
                 <h2
-                  className="button-text_Menu"
+                  className="button-text"
                   style={{
                     letterSpacing: modalSet == "joinroom" ? "6px" : undefined,
                   }}
@@ -96,9 +96,9 @@ const MenuPage: React.FC<MenuPageProps> = ({
                 setModalSet("createroom");
               }}
             >
-              <button className="mainSectionButton" onClick={buttonHandler}>
+              <button className="button" onClick={buttonHandler}>
                 <motion.h2
-                  className="button-text_Menu"
+                  className="button-text"
                   style={{
                     letterSpacing: modalSet == "createroom" ? "6px" : undefined,
                   }}

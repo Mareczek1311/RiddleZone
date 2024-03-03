@@ -1,4 +1,5 @@
 import "./MessagePage.css"
+import { motion } from "framer-motion";
 
 interface MessagePageProps {
     message: string;
@@ -6,9 +7,11 @@ interface MessagePageProps {
 
 const MessagePage: React.FC<MessagePageProps> = ({message}) => {
     return (
-        <div>
-            <h1>{message}</h1>
-        </div>
+        <motion.div className="MainSectionLobby">
+            <motion.div className="ManageSectionLobby">
+                <h1>{message}</h1>
+            </motion.div>
+        </motion.div>
     )
 }
 

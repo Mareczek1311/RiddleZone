@@ -30,7 +30,7 @@ export default function Footer() {
       <div className="footer-wrapper">
           <h5 className="grey-text" style={{ height: isOpen ? "0%" : "100%", opacity: isOpen ? 0 : 1 }}>INFORMATIONS</h5>
       <motion.div className="line-wrapper" onClick={() => {setIsOpen(!isOpen)} } >
-        <motion.div className="footer-line line_small" />
+        <motion.div className="footer-line line_small" style={{ backgroundColor: isOpen ? "rgba(0, 0, 0, 0.4)" : "#000000" }} />
       </motion.div>
       <motion.div className="footer_container">
         <motion.div className="footer_jik-wrapper">

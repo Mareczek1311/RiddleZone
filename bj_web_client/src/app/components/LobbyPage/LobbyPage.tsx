@@ -44,13 +44,13 @@ const LobbyPage: React.FC<LobbyPageProps> = ({
           <motion.div className="players_container">
             <motion.div className="player-wrapper-ex">
               <motion.h5 className="example-text">EXAMPLE</motion.h5>
-              <motion.div className="player-value-wrapper-ex">
+              {/* <motion.div className="player-value-wrapper-ex">
                 <motion.h2 className="player-value-ex">IMG</motion.h2>
-              </motion.div>
+              </motion.div> */}
               <motion.div className="player-value-wrapper-ex">
                 <motion.h2 className="player-value-ex">NAME</motion.h2>
               </motion.div>
-              <motion.div className="player-value-wrapper-ex">
+              {/* <motion.div className="player-value-wrapper-ex">
                 <motion.h2 className="player-value-ex">LEVEL</motion.h2>
               </motion.div>
               <motion.div className="player-value-wrapper-ex">
@@ -58,19 +58,19 @@ const LobbyPage: React.FC<LobbyPageProps> = ({
               </motion.div>
               <motion.div className="player-value-wrapper-ex">
                 <motion.h2 className="player-value-ex">LOACTION</motion.h2>
-              </motion.div>
+              </motion.div> */}
             </motion.div>
 
             {playerList.map((player, index) => {
               return (
                 <motion.div className="player-wrapper" key={index}>
-                  <motion.div className="player-value-wrapper">
+                  {/* <motion.div className="player-value-wrapper">
                     <motion.h2 className="player-value">IMG</motion.h2>
-                  </motion.div>
+                  </motion.div> */}
                   <motion.div className="player-value-wrapper">
                     <motion.h2 className="player-value">{player}</motion.h2>
                   </motion.div>
-                  <motion.div className="player-value-wrapper">
+                  {/* <motion.div className="player-value-wrapper">
                     <motion.h2 className="player-value">LVL: 51</motion.h2>
                   </motion.div>
                   <motion.div className="player-value-wrapper">
@@ -78,7 +78,7 @@ const LobbyPage: React.FC<LobbyPageProps> = ({
                   </motion.div>
                   <motion.div className="player-value-wrapper lastOne">
                     <motion.h2 className="player-value lastOne">POLAND</motion.h2>
-                  </motion.div>
+                  </motion.div> */}
                 </motion.div>
               );
             })}

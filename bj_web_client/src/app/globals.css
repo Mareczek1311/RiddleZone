@@ -40,7 +40,7 @@
   border-radius: 0;
   width: auto;
   min-width: 240px;
-  margin: 0 0;
+  margin: 12px 4px;
   padding: 0 0;
 }
 
@@ -69,8 +69,8 @@
 
 input {
   width: 100%;
+  height: 100%;
   min-height: 10%;
-  max-height: 30%;
   display: flex;
   justify-content: start;
   align-items: end;
@@ -166,7 +166,7 @@ span {
 
 /* Dostosowanie paska przewijania */
 ::-webkit-scrollbar {
-  width: 12px; /* szerokość */
+  width: 8px; /* szerokość */
 }
 
 /* Track */
@@ -176,7 +176,7 @@ span {
 
 /* Kolor cienia paska przewijania */
 ::-webkit-scrollbar-thumb {
-  background: #cfcfcf; 
+  background: #c4c4c4bb; 
   border-radius: 12px;
 }
 
@@ -184,3 +184,47 @@ span {
 ::-webkit-scrollbar-thumb:hover {
   background: #b4b4b4; 
 }
+
+/* Global styles remain unchanged */
+
+@media only screen and (max-width: 768px) {
+  /* Adjustments for tablets and below */
+  .button, .input-wrapper {
+    width: auto; /* Adjust width to fit smaller screens */
+    margin: 8px; /* Reduce margin */
+    padding: 8px 0; /* Adjust padding */
+    min-width: 180px; /* Smaller minimum width for buttons */
+  }
+
+  .button-text {
+    font-size: 24px; /* Adjust font size for smaller screens */
+    letter-spacing: 2px; /* Reduce letter spacing */
+  }
+
+  .input-description, .input-title {
+    font-size: 16px; /* Smaller font size */
+  }
+
+  .section-title {
+    font-size: 20px; /* Adjust section title font size */
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  /* Adjustments for mobile phones */
+  .button, .input-wrapper {
+    min-width: 150px; /* Even smaller minimum width for buttons */
+    margin: 4px; /* Less margin */
+  }
+
+  .button-text, .input-description, .input-title, .section-title {
+    font-size: 16px; /* Smaller font sizes for readability */
+  }
+
+  .input-wrapper {
+    width: 90%; /* Make input wrapper take up more screen width */
+    margin: 8px auto; /* Center it with automatic margins */
+  }
+}
+
+/* Custom scrollbar styles remain the same but consider if they need adjustments for touch interfaces */

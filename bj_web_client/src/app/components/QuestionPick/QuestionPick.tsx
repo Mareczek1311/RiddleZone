@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./QuestionPick.css"
 import { set } from "firebase/database";
+import { motion } from "framer-motion";
 
 interface QuestionPickProps {
     socket: any;
@@ -26,18 +27,21 @@ const QuestionPick : React.FC<QuestionPickProps> = ({ socket, room_id }) =>{
     }
     
     return (
-    <div className="MainSection">
+    <div className="MainSectionLobby">
+        <motion.div className="ManageSectionLobby">
+
         <h1>QuestionPick</h1>
         {
             questionList.map((question: any) => {
                 return (
-                    <div className="QuestionSection" key={question[0]}>
-                        <p>{question[1]}</p>
-                        <button onClick={() => PickQuestion(question[0])}>Pick</button>
-                    </div>
+                    <motion.div className="QuestionSection" key={question[0]}>
+                        <motion.h4>{question[1]}</motion.h4>
+                        <motion.button className="button" onClick={() => PickQuestion(question[0])}><h1 className="button-text">Pick</h1></motion.button>
+                    </motion.div>
                 )
             })
         }
+        </motion.div>
         
     </div>
     );
