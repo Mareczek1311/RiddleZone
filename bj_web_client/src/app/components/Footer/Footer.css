@@ -18,7 +18,7 @@
     left: 0px;
     width: 100vw;
     height: 500vh;
-    background-color: rgba(0, 0, 0, 0.13);
+    background-color: rgba(0, 0, 0, 0.05);
     z-index: -1000;
 }
 
@@ -64,9 +64,10 @@
 
 .line-wrapper {
     position: relative;
-    top: -30%;
+    top: -24%;
     left: 0;
     width: 100%;
+
 }
 
 .line_small {

@@ -9,7 +9,9 @@ interface EndPageProps {
 
 const EndPage: React.FC<EndPageProps> = ( {socket, room_id, ranking, playerData} ) => {
     return (
-        <div className="EndPage">
+        <div className="MainSectionLobby">
+            <div className="ManageSectionLobby">
+
             <h1>GAME IS ENDED</h1>
 
             <div>
@@ -22,12 +24,13 @@ const EndPage: React.FC<EndPageProps> = ( {socket, room_id, ranking, playerData}
             </div>
             {
                 playerData[0] ? 
-                <button onClick={() => {
+                <button className="button" onClick={() => {
                     socket.emit("restart_game", room_id);
-                }}>Restart game</button>
+                }}><h1 className="button-text">Restart game</h1></button>
                 : 
                 <h2>Waiting for the host to restart the game</h2>
             }
+            </div>
         </div>
     )
 }
