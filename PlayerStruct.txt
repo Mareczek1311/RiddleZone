@@ -1,5 +1,0 @@
-socket_id: [isReadyState, isAdmin, player_id]
-
-
-
-
