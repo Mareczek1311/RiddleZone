@@ -26,5 +26,5 @@ In addition to the current features, we have exciting additions planned for Ridd
 
 - **QuizSet Maker:** Create your own quiz sets and share them with other players.
 
-Stay tuned for these updates, and feel free to contribute your ideas and suggestions!
+Stay tuned for these updates, and feel free to contribute your ideas and suggestions!!
 
