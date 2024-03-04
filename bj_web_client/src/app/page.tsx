@@ -1,5 +1,6 @@
 "use client";
 
+//REPAIR SPAMMING ON BUTTONS
 /*
   for every button click we need to do a loading screen
 */
@@ -36,7 +37,11 @@ export default function Home() {
   const [ranking, setRanking] = useState([]);
   const [correctQuestion, setCorrectQuestion] = useState(false);
   const [correct_answer, setCorrect_answer] = useState("");
+  const [isClickedForQuestionPage, setIsClickedForQuestionPage] = useState(false) //I THINK IT SUCS
 
+  function updateClieckedForQuestionPage(data : boolean){
+    setIsClickedForQuestionPage(data);
+  }
 
   function updateUser(user: User | null) {
     setUser(user);
@@ -54,15 +59,9 @@ export default function Home() {
     socket = await io("localhost:3001");
 
 
-    /*
     if(nickname == ""){
-      return;
+      nickname = "PLAYER" + Math.floor(Math.random() * 1000); 
     }
-    */
-   
-    //LINE THAT NEEDS TO BE REMOVED
-    nickname = "PLAYER" + Math.floor(Math.random() * 1000); 
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     console.log("Connecting to room: ", room_id);
     socket.on("connect", async () => {
@@ -135,6 +134,7 @@ export default function Home() {
       setCurrQuestion(question);
       setWaitForPlayers(false);
       setCorrect_answer("");
+      updateClieckedForQuestionPage(false)
     })
 
     socket.on("start_game", () => {
@@ -234,6 +234,8 @@ export default function Home() {
               currQuestion={currQuestion}
               waitForPlayers={waitForPlayers}
               correct_answer={correct_answer}
+              isClicked={isClickedForQuestionPage}
+              updateIsClicked={updateClieckedForQuestionPage}
             />
           }
         </div>

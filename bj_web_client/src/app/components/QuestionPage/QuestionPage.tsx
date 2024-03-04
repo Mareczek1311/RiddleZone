@@ -1,5 +1,6 @@
 import "./QuestionPage.css";
 import { motion } from "framer-motion";
+import React, { useState } from "react";
 
 interface QuestionPageProps {
     socket: any;
@@ -7,13 +8,19 @@ interface QuestionPageProps {
     currQuestion: string[];
     waitForPlayers: boolean;
     correct_answer: string;
+    isClicked: boolean;
+    updateIsClicked: (data: boolean) => void
 }
 
-const QuestionPage: React.FC<QuestionPageProps> = ({socket, room_id, currQuestion, waitForPlayers, correct_answer}) => {
- 
+const QuestionPage: React.FC<QuestionPageProps> = ({socket, room_id, currQuestion, waitForPlayers, correct_answer, isClicked, updateIsClicked}) => {
+
+
     function sendAnswer(answer: string) {
+        if (isClicked) {
+            return;
+        }
         socket.emit('send_answer', {room_id, answer});
-        
+        updateIsClicked(true)
     }
 
     return(

@@ -28,7 +28,7 @@ const QuestionPick : React.FC<QuestionPickProps> = ({ socket, room_id }) =>{
     
     return (
     <div className="MainSectionLobby">
-        <motion.div className="ManageSectionLobby">
+        <motion.div className="ManageSectionLobby">1
 
         <h1>QuestionPick</h1>
         {

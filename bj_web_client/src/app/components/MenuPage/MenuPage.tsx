@@ -57,6 +57,16 @@ const MenuPage: React.FC<MenuPageProps> = ({
     <div className="MainSection">
       <div className="ManageSection">
         <div className="rooms_container">
+       
+              <div className="input-wrapper">
+              <h4 className="input-description">NICKNAME</h4>
+              <input
+                type="text"
+                value={inputValue2}
+                onChange={handleInputChange2}
+                placeholder="Enter nickname"
+              />
+            </div>
           {(modalSet == "joinroom" || modalSet == "createroom") && (
             <div className="input-wrapper">
               <h4 className="input-description">ROOM ID</h4>
