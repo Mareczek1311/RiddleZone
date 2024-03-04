@@ -1,6 +1,6 @@
 # RiddleZone
 
-##Link: http://www.riddle-zone.com/
+## Link to website: http://www.riddle-zone.com/
 
 RiddleZone is an immersive multiplayer online game designed to bring the excitement of multiplayer quizzes to your fingertips. Built using cutting-edge technologies such as Next.js, Express.js, Socket.io, and Firebase, RiddleZone offers a seamless and interactive gaming experience.
 
