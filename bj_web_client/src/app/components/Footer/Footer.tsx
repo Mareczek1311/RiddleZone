@@ -22,7 +22,6 @@ export default function Footer() {
   return (
     <motion.footer className="footer"
     variants={footerVariants}
-    initial={controls}
     animate={controls}
     transition={{ type: "ease" }}
     >

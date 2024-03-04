@@ -17,8 +17,10 @@ const server = createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "*",
-  },
+    origin: "*", 
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }
 });
 
 async function addPlayerToRoomFirebase(room_id, player_id, real_player_id) {
@@ -541,6 +543,9 @@ app.get("/", async (req, res) => {
   console.log("GET /");
 });
 
-server.listen(3001, () => {
+
+const PORT = process.env.PORT || 3001;
+
+server.listen(PORT, '0.0.0.0', () => {
   console.log("server running at http://localhost:3001");
 });

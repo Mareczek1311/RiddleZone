@@ -56,7 +56,7 @@ export default function Home() {
   }
 
   const ConnectToRoom = async (room_id: string, nickname: string) => {
-    socket = await io("localhost:3001");
+    socket = await io("https://riddlezoneserver-13f8751c3253.herokuapp.com/");
 
 
     if(nickname == ""){
