@@ -9,10 +9,11 @@ interface QuestionPageProps {
     waitForPlayers: boolean;
     correct_answer: string;
     isClicked: boolean;
-    updateIsClicked: (data: boolean) => void
+    updateIsClicked: (data: boolean) => void;
+    isAdmin: boolean;
 }
 
-const QuestionPage: React.FC<QuestionPageProps> = ({socket, room_id, currQuestion, waitForPlayers, correct_answer, isClicked, updateIsClicked}) => {
+const QuestionPage: React.FC<QuestionPageProps> = ({socket, room_id, currQuestion, waitForPlayers, correct_answer, isClicked, updateIsClicked, isAdmin}) => {
 
 
     function sendAnswer(answer: string) {
@@ -20,6 +21,14 @@ const QuestionPage: React.FC<QuestionPageProps> = ({socket, room_id, currQuestio
             return;
         }
         socket.emit('send_answer', {room_id, answer});
+        updateIsClicked(true)
+    }
+
+    function SkipQuestion() {
+        if (isClicked) {
+            return;
+        }
+        socket.emit('skip_question', room_id);
         updateIsClicked(true)
     }
 
@@ -136,7 +145,21 @@ const QuestionPage: React.FC<QuestionPageProps> = ({socket, room_id, currQuestio
               <motion.h1 className="button-text">{currQuestion[4]}</motion.h1>
             </motion.button>
           </motion.div>
+          {isAdmin ?
+          <motion.div className="question-page-answer">
+            <motion.button
+              onClick={() => {
+                SkipQuestion();
+              }}
+              className="button"
+            >
+              <motion.h1 className="button-text">SKIP QUESTION</motion.h1>
+            </motion.button>
+          </motion.div>
+          : null
+        }
         </motion.div>
+        
 }
 
 </motion.div>

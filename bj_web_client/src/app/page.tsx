@@ -236,6 +236,7 @@ export default function Home() {
               correct_answer={correct_answer}
               isClicked={isClickedForQuestionPage}
               updateIsClicked={updateClieckedForQuestionPage}
+              isAdmin={playerData[0]}
             />
           }
         </div>
