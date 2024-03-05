@@ -35,6 +35,7 @@ const LobbyPage: React.FC<LobbyPageProps> = ({
       <motion.div className="ManageSectionLobby">
         <motion.div className="section-title">
           <motion.h1 className="title">LOBBY</motion.h1>
+          <motion.h3>ROOM ID: {room_id}</motion.h3>
         </motion.div>
         <motion.div className="players-title-wrapper">
           <motion.h1 className="players-title">PLAYERS</motion.h1>
@@ -61,14 +62,15 @@ const LobbyPage: React.FC<LobbyPageProps> = ({
               </motion.div> */}
             </motion.div>
 
-            {playerList.map((player, index) => {
+            {
+            playerList.map((player, index) => {
               return (
                 <motion.div className="player-wrapper" key={index}>
                   {/* <motion.div className="player-value-wrapper">
                     <motion.h2 className="player-value">IMG</motion.h2>
                   </motion.div> */}
                   <motion.div className="player-value-wrapper">
-                    <motion.h2 className="player-value">{player}</motion.h2>
+                    <motion.h2 className="player-value">{player[0]}</motion.h2>
                   </motion.div>
                   {/* <motion.div className="player-value-wrapper">
                     <motion.h2 className="player-value">LVL: 51</motion.h2>
@@ -79,6 +81,16 @@ const LobbyPage: React.FC<LobbyPageProps> = ({
                   <motion.div className="player-value-wrapper lastOne">
                     <motion.h2 className="player-value lastOne">POLAND</motion.h2>
                   </motion.div> */}
+                  {
+              player[1] ?
+                  <motion.div className="player-value-wrapper">
+                    <motion.h2 className="player-value">READY</motion.h2>
+                  </motion.div>
+                  :
+                  <motion.div className="player-value-wrapper">
+                    <motion.h2 className="player-value">NOT READY</motion.h2>
+                  </motion.div>
+            }
                 </motion.div>
               );
             })}

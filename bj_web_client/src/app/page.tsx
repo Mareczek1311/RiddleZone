@@ -97,6 +97,7 @@ export default function Home() {
     socket.on("update_ready", (data: any) => {
       setReadyCounter(data);
       console.log("Ready Counter: ", data);
+      socket.emit("get_player_list", room_id);
     });
 
     socket.on("error_send_question", () => {

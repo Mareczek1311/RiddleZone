@@ -499,7 +499,7 @@ io.on("connection", (socket) => {
     docRef.get().then((snapshot) => {
       const arr = [];
       snapshot.forEach((doc) => {
-        arr.push(doc.data()["realID"]);
+        arr.push([doc.data()["realID"], doc.data()["isReady"]]);
       });
       io.to(room_id).emit("send_player_list", arr);
     });
