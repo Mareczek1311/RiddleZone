@@ -1,0 +1,6 @@
+[submodule "server"]
+	path = server
+	url = https://git.heroku.com/riddlezoneserver.git
+[submodule "web_client"]
+	path = web_client
+	url = https://git.heroku.com/riddlezonewebclient.git
