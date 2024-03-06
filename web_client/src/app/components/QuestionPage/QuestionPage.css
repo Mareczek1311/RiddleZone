@@ -1,0 +1,24 @@
+.question-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 33%;
+}
+.question-page-answer-correct{
+    transform: scale(1.2);
+    background-color: rgba(0, 255, 0, 0.336);
+}
+
+.question-page-answer-uncorrect{
+    transform: scale(1.2);
+    background-color: rgba(255, 0, 0, 0.493);
+}
+
+.question-page-answer-correct-text {
+    color: rgb(32, 32, 32);
+}
+
+.question-page-answer-uncorrect-text {
+    color: rgb(32, 32, 32);
+}
