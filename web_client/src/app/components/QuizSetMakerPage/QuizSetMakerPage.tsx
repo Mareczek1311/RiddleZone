@@ -1,6 +1,7 @@
 import { set } from "firebase/database";
 import { useState } from "react";
 import "./QuizSetMakerPage.css";
+import { motion } from "framer-motion";
 
 interface QuizSetMakerPageProps {
     socket : any;
@@ -81,23 +82,73 @@ const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({ socket }) => {
 
     return (
         <div>
+        <div className="ManageSection">
             <h1>Quiz Set Maker</h1>
             <div>
-                <h3>Quiz name:</h3>
-                <input type="text" value={nameSetInputValue} onChange={(event) => setNameSetInputValue(event.target.value)} />
+              <h4 className="input-description">QUIZ NAME</h4>
+              <input
+                type="text"
+                value={nameSetInputValue}
+                onChange={(event) => setNameSetInputValue(event.target.value)}
+                placeholder="Enter quiz name"
+              />
+        
+                <button className="button" onClick={() => {buttonHandler()}}>
+                <motion.h2
+                  className="button-text"
+                  style={{
+                  }}
+                >
+                  {" "}
+                  {"<"}{" "}
+                </motion.h2>
+              </button>
 
-                <h3>Question {questionCounter}: </h3>        
-                <input type="text" value={questionInputValue} onChange={(event) => setQuestionInputValue(event.target.value)} />
-                
-                <h1>answer a: </h1>
-                <input type="text" value={answerAInputValue} onChange={(event) => setAnswerAInputValue(event.target.value)} />
-                <h1>answer b: </h1>
-                <input type="text" value={answerBInputValue} onChange={(event) => setAnswerBInputValue(event.target.value)} />
-                <h1>answer c: </h1>
-                <input type="text" value={answerCInputValue} onChange={(event) => setAnswerCInputValue(event.target.value)} />
-                <h1>answer d: </h1>
-                <input type="text" value={answerDInputValue} onChange={(event) => setAnswerDInputValue(event.target.value)} />
 
+                <h3></h3>     
+
+                <h4 className="input-description">Question {questionCounter}: </h4>
+                <input
+                    type="text"
+                    value={nameSetInputValue}
+                    onChange={(event) => setQuestionInputValue(event.target.value)}
+                    placeholder="Enter question"
+                />
+
+
+                <h4 className="input-description">Answer A:</h4>
+                <input
+                    type="text"
+                    value={nameSetInputValue}
+                    onChange={(event) => setAnswerAInputValue(event.target.value)}
+                    placeholder="Enter answer A"
+                />
+
+                <h4 className="input-description">Answer B:</h4>
+                <input
+                    type="text"
+                    value={nameSetInputValue}
+                    onChange={(event) => setAnswerBInputValue(event.target.value)}
+                    placeholder="Enter answer B"
+                />
+
+                <h4 className="input-description">Answer C:</h4>
+                <input
+                    type="text"
+                    value={nameSetInputValue}
+                    onChange={(event) => setAnswerCInputValue(event.target.value)}
+                    placeholder="Enter answer C"
+                />
+
+                <h4 className="input-description">Answer D:</h4>
+                <input
+                    type="text"
+                    value={nameSetInputValue}
+                    onChange={(event) => setAnswerDInputValue(event.target.value)}
+                    placeholder="Enter answer D"
+                />
+
+            <div className="input-wrapper">
                 <select onChange={onOptionChangeHandler}>
                 <option>Choose correct answer:</option>
                 {options.map((option, index) => {
@@ -108,11 +159,25 @@ const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({ socket }) => {
                     );
                 })}
             </select>
-            <button>Add question</button>
+            </div>
 
+
+             <button className="button" onClick={() => {buttonHandler()}}>
+                <motion.h2
+                  className="button-text"
+                  style={{
+                  }}
+                >
+                  {" "}
+                  {">"}{" "}
+                </motion.h2>
+              </button>
+            
+            
             </div>
 
         </div>  
+        </div>
     );
 }
 
