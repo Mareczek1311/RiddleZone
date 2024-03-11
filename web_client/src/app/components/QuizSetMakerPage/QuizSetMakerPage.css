@@ -1,19 +1,21 @@
 .MainSection{
-    display: flex;
-    justify-content: center;
-    align-items: end;
-    width: 100%;
-    height: 76vh !important;
-    text-align: center;
+  display: flex;
+  width: 100%;
+  height: 76vh !important;
+  text-align: center;
 }
 input{
-    width: 100%;
-    height: 100%;
     padding: 10px;
     margin: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+
+}
+
+.JUSTFKNGWORK{
+    display: flex;
+    flex-direction: column;
 
 }
 
@@ -26,6 +28,16 @@ input{
     min-height: 50%;
     width: 100%;
     margin-bottom: 10%;
+}
+
+.Preview{
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-direction: column;
+  height: auto;
+  min-height: 50%;
+  width: 100%;
+  margin-bottom: 10%;
 }
 
 .rooms_container {

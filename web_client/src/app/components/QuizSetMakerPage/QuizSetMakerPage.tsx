@@ -1,5 +1,5 @@
 import { set } from "firebase/database";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./QuizSetMakerPage.css";
 import { motion } from "framer-motion";
 
@@ -18,51 +18,49 @@ const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({ socket }) => {
 
 
     const [questionCounter, setQuestionCounter] = useState(1);
+    const [questionIndex, setQuestionIndex] = useState(0);
 
-    const [questionList, setQuestionList] = useState([] as any[]);
+    const [questionList, setQuestionList] = useState([{question: "", 
+    answerA: "",
+    answerB: "",
+    answerC: "",
+    answerD: "",
+    correctAnswer: ""}] as any[]);
 
-    function ResetValues() {
-        setQuestionInputValue("");
-        setAnswerAInputValue("");
-        setAnswerBInputValue("");
-        setAnswerCInputValue("");
-        setAnswerDInputValue("");
-        setData("");
+    function DeleteQuestion() {
+        if(questionCounter === 1) {
+            return;
+        }
+        questionList.splice(questionIndex, 1);
+        setQuestionList([...questionList]);
+        setQuestionCounter(questionCounter - 1);
+        setQuestionIndex(questionIndex - 1);
     }
 
-    function addQuestion() {
-        
-        if(data === "") {
-            alert("Please select correct answer");
-            return;
+    function switchQuestion(direction: number) {
+        if(direction == -1) {
+            if(questionCounter <= 1) {
+                return;
+            }
+            setQuestionCounter(questionCounter - 1);
+            setQuestionIndex(questionIndex - 1);
         }
-        if(answerAInputValue === "" || answerBInputValue === "" || answerCInputValue === "" || answerDInputValue === "") {
-            alert("Please fill all answers");
-            return;
+        if (direction == 1){
+ 
+            setQuestionCounter(questionCounter + 1);
+            if(questionCounter === questionList.length) {
+                const question = {question: "", 
+                answerA: "",
+                answerB: "",
+                answerC: "",
+                answerD: "",
+                correctAnswer: ""};
+                setQuestionList([...questionList, question]);
+                console.log("created")
+            }
+            setQuestionIndex(questionIndex+1);
         }
-        if(questionInputValue === "") {
-            alert("Please fill question");
-            return;
-        }
-
-        setQuestionCounter(questionCounter + 1);
-        
-        const question = {
-            question: questionInputValue,
-            answers: [
-                answerAInputValue,
-                answerBInputValue,
-                answerCInputValue,
-                answerDInputValue
-            ],
-            correctAnswer: data
-        }
-        setQuestionList([...questionList, question]);
-
-        ResetValues();
     }
-
-
 
     const [data, setData] = useState("");
  
@@ -80,8 +78,32 @@ const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({ socket }) => {
         );
     };
 
+
+    useEffect(() => {
+        var currQuestion = questionList[questionIndex];
+        currQuestion.question = questionInputValue;
+        currQuestion.answerA = answerAInputValue;
+        currQuestion.answerB = answerBInputValue;
+        currQuestion.answerC = answerCInputValue;
+        currQuestion.answerD = answerDInputValue;
+        currQuestion.correctAnswer = data;
+        
+        questionList[questionIndex] = currQuestion;
+        setQuestionList([...questionList]); 
+    }, [questionInputValue, answerAInputValue, answerBInputValue, answerCInputValue, answerDInputValue, data]);
+
+    useEffect(() => {
+        setAnswerAInputValue(questionList[questionIndex].answerA);
+        setAnswerBInputValue(questionList[questionIndex].answerB);
+        setAnswerCInputValue(questionList[questionIndex].answerC);
+        setAnswerDInputValue(questionList[questionIndex].answerD);
+        setQuestionInputValue(questionList[questionIndex].question);
+        setData(questionList[questionIndex].correctAnswer);
+    }
+    , [questionIndex]);
+
     return (
-        <div>
+        <div className="MainSection">
         <div className="ManageSection">
             <h1>Quiz Set Maker</h1>
             <div>
@@ -93,7 +115,9 @@ const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({ socket }) => {
                 placeholder="Enter quiz name"
               />
         
-                <button className="button" onClick={() => {buttonHandler()}}>
+                <button className="button" onClick={() => {
+                    switchQuestion(-1)
+                    }}>
                 <motion.h2
                   className="button-text"
                   style={{
@@ -110,7 +134,7 @@ const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({ socket }) => {
                 <h4 className="input-description">Question {questionCounter}: </h4>
                 <input
                     type="text"
-                    value={nameSetInputValue}
+                    value={questionInputValue}
                     onChange={(event) => setQuestionInputValue(event.target.value)}
                     placeholder="Enter question"
                 />
@@ -119,7 +143,7 @@ const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({ socket }) => {
                 <h4 className="input-description">Answer A:</h4>
                 <input
                     type="text"
-                    value={nameSetInputValue}
+                    value={answerAInputValue}
                     onChange={(event) => setAnswerAInputValue(event.target.value)}
                     placeholder="Enter answer A"
                 />
@@ -127,7 +151,7 @@ const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({ socket }) => {
                 <h4 className="input-description">Answer B:</h4>
                 <input
                     type="text"
-                    value={nameSetInputValue}
+                    value={answerBInputValue}
                     onChange={(event) => setAnswerBInputValue(event.target.value)}
                     placeholder="Enter answer B"
                 />
@@ -135,7 +159,7 @@ const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({ socket }) => {
                 <h4 className="input-description">Answer C:</h4>
                 <input
                     type="text"
-                    value={nameSetInputValue}
+                    value={answerCInputValue}
                     onChange={(event) => setAnswerCInputValue(event.target.value)}
                     placeholder="Enter answer C"
                 />
@@ -143,7 +167,7 @@ const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({ socket }) => {
                 <h4 className="input-description">Answer D:</h4>
                 <input
                     type="text"
-                    value={nameSetInputValue}
+                    value={answerDInputValue}
                     onChange={(event) => setAnswerDInputValue(event.target.value)}
                     placeholder="Enter answer D"
                 />
@@ -161,22 +185,55 @@ const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({ socket }) => {
             </select>
             </div>
 
-
-             <button className="button" onClick={() => {buttonHandler()}}>
-                <motion.h2
-                  className="button-text"
-                  style={{
-                  }}
-                >
-                  {" "}
-                  {">"}{" "}
-                </motion.h2>
-              </button>
-            
+                    <div className="JUSTFKNGWORK">
+                    <button className="button" onClick={() => {
+                        switchQuestion(1)
+                        }}>
+                        <motion.h2
+                        className="button-text"
+                        style={{
+                        }}
+                        >
+                        {" "}
+                        {">"}{" "}
+                        </motion.h2>
+                    </button>
+                    <button className="button" onClick={() => {
+                        DeleteQuestion()
+                        }}>
+                        <motion.h2
+                        className="button-text"
+                        style={{
+                        }}
+                        >
+                        {" "}
+                        Delete Question{" "}
+                        </motion.h2>
+                    </button>
+                    </div>
             
             </div>
+            
 
         </div>  
+        <div className="Preview">
+                <h1>Preview</h1>
+                  {
+                    questionList.map((question, index) => {
+                        return (
+                            <div key={index}>
+                                <h4>Question {index + 1}: {question.question}</h4>
+                                <h4>Answer A: {question.answerA}</h4>
+                                <h4>Answer B: {question.answerB}</h4>
+                                <h4>Answer C: {question.answerC}</h4>
+                                <h4>Answer D: {question.answerD}</h4>
+                                <h4>Correct Answer: {question.correctAnswer}</h4>
+                            </div>
+                        );
+                    })
+                  }
+
+            </div>
         </div>
     );
 }
