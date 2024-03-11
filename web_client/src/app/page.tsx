@@ -189,6 +189,7 @@ export default function Home() {
       <Navbar isOnMainPage={isOnMainPage} />
 
       {
+
       //user 
       true
       ? (
@@ -245,7 +246,8 @@ export default function Home() {
         </div>
       ) : (
         <LoginPage updateUser={updateUser} />
-      )}
+      )
+      }
 
       <Footer />
     </div>
