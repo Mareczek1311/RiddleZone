@@ -18,7 +18,6 @@ import QuestionPick from "./components/QuestionPick/QuestionPick";
 import QuestionPage from "./components/QuestionPage/QuestionPage";
 import MessagePage from "./components/MessagePage/MessagePage";
 import EndPage from "./components/EndPage/EndPage";
-import QuizSetMakerPage from './components/QuizSetMakerPage/QuizSetMakerPage';
 
 var socket: any;
 socket = null;
@@ -188,10 +187,8 @@ export default function Home() {
   return (
     <div className="App">
       <Navbar isOnMainPage={isOnMainPage} />
-      <QuizSetMakerPage
-      socket={socket} />
+
       {
-      /*
 
       //user 
       true
@@ -250,7 +247,6 @@ export default function Home() {
       ) : (
         <LoginPage updateUser={updateUser} />
       )
-        */
       }
 
       <Footer />
