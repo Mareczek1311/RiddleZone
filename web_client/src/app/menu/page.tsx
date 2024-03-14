@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { UserAuth } from "../context/authContext"
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export default function Menu(){
     const { user, googleSignIn, logOut } = UserAuth();
@@ -16,6 +17,7 @@ export default function Menu(){
     return (
         <div>
             <button onClick={logOut}> LogOut</button>
+            <Link href="/createQuestionSet">Create new Quiz</Link>
         </div>
     )
 }

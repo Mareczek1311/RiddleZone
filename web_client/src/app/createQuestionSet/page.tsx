@@ -5,16 +5,18 @@ import { use, useEffect, useState } from "react";
 import "./QuizSetMakerPage.css";
 import { motion } from "framer-motion";
 import { redirect } from "next/navigation";
+import { UserAuth } from "../context/authContext";
 
 interface QuizSetMakerPageProps {
   socket: any;
-  user: any;
 }
 
 const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({
   socket,
-  user,
 }) => {
+
+  const { user, googleSignIn, logOut } = UserAuth();
+
   const [nameSetInputValue, setNameSetInputValue] = useState("");
   const [questionInputValue, setQuestionInputValue] = useState("");
   const [answerAInputValue, setAnswerAInputValue] = useState("");
@@ -111,14 +113,17 @@ const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({
   
   
   useEffect(() => {
-    if(!user){
-      redirect('/login');
+    if(user == null){
+      redirect("/login")
     }
-  }, [])
+  }
+  , [user])
 
   return (
-    <div className="MainSection">
+    <div>
         {user ?
+    <div className="MainSection">
+
             <div>
             <div className="ManageSection">
               <h1>Quiz Set Maker</h1>
@@ -219,7 +224,6 @@ const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({
                   </button>
                 </div>
               </div>
-              d
             </div>
             <div className="Preview">
               <h1>Preview</h1>
@@ -239,11 +243,14 @@ const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({
               })}
             </div>
           </div>
-        :null
+    </div>
+
+    :null
         }
   
     </div>
   );
+  
 };
 
 export default QuizSetMakerPage;
