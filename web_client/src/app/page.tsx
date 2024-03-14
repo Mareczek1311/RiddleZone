@@ -179,6 +179,10 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(()=>{
+    console.log(user)
+  },[user])
+
   
   const [isOnMainPage, setIsOnMainPage] = useState(true);
   useEffect(() => {
@@ -190,8 +194,7 @@ export default function Home() {
 
       {
 
-      //user 
-      true
+      user 
       ? (
         <div>
           {room_id == "" ? (
