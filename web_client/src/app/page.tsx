@@ -11,13 +11,14 @@ import Navbar from "./components/Navbar/Navbar";
 import { io } from "socket.io-client";
 import Footer from "./components/Footer/Footer";
 import { User } from "firebase/auth";
-import LoginPage from "./components/LoginPage/LoginPage";
+import LoginPage from "./login/page";
 import MenuPage from "./components/MenuPage/MenuPage";
 import LobbyPage from "./components/LobbyPage/LobbyPage";
 import QuestionPick from "./components/QuestionPick/QuestionPick";
 import QuestionPage from "./components/QuestionPage/QuestionPage";
 import MessagePage from "./components/MessagePage/MessagePage";
 import EndPage from "./components/EndPage/EndPage";
+import { redirect } from "next/navigation";
 
 var socket: any;
 socket = null;
@@ -41,10 +42,6 @@ export default function Home() {
 
   function updateClieckedForQuestionPage(data : boolean){
     setIsClickedForQuestionPage(data);
-  }
-
-  function updateUser(user: User | null) {
-    setUser(user);
   }
 
   function updateRoomID(room_id: string) {
@@ -179,6 +176,12 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(()=>{
+    console.log(user)
+  },[user])
+
+
+
   
   const [isOnMainPage, setIsOnMainPage] = useState(true);
   useEffect(() => {
@@ -190,8 +193,7 @@ export default function Home() {
 
       {
 
-      //user 
-      true
+      true 
       ? (
         <div>
           {room_id == "" ? (
@@ -244,9 +246,9 @@ export default function Home() {
             />
           }
         </div>
-      ) : (
-        <LoginPage updateUser={updateUser} />
-      )
+      ) :
+      
+      <div></div>
       }
 
       <Footer />
