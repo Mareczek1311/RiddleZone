@@ -108,12 +108,13 @@ const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({
     setQuestionInputValue(questionList[questionIndex].question);
     setData(questionList[questionIndex].correctAnswer);
   }, [questionIndex]);
-
+  
+  
   useEffect(() => {
-    if (!user) {
-      redirect(`/`);
+    if(!user){
+      redirect('/login');
     }
-  }, []);
+  }, [])
 
   return (
     <div className="MainSection">

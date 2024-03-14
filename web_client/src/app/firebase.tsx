@@ -26,43 +26,5 @@ const firebaseConfig = {
   measurementId: "G-9J6E460K0G",
 };
 
-// Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-
-/*
-const db = getFirestore(app);
-
-export async function addToDB() {
-  try {
-    const docRef = await addDoc(collection(db, "users"), {
-      first: "Ada",
-      last: "Lovelace",
-      born: 1815,
-    });
-    console.log("Document written with ID: ", docRef.id);
-  } catch (e) {
-    console.error("Error adding document: ", e);
-  }
-}
-*/
-
+const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-
-export async function signInWithGoogle() {
-  return await signInWithRedirect(auth, new GoogleAuthProvider())
-}
-
-export function signOutUser() {
-  console.log(auth.currentUser)
-  return auth.signOut()
-}
-
-export function isUserLoggedIn(){
-  const isLoggedIn = auth.currentUser !== null; // Jeśli currentUser istnieje, isLoggedIn = true
-  console.log(isLoggedIn);
-  return isLoggedIn;
-}
-
-export function onAuthStateChangedHelper(callback: (user: User | null) => void) {
-  return onAuthStateChanged(auth, callback);
-}
