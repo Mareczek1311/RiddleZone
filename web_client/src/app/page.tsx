@@ -19,8 +19,8 @@ import QuestionPage from "./components/QuestionPage/QuestionPage";
 import MessagePage from "./components/MessagePage/MessagePage";
 import EndPage from "./components/EndPage/EndPage";
 import { redirect } from "next/navigation";
+import { UserSocket } from './context/socketContext';
 
-var socket: any;
 socket = null;
 
 export default function Home() {
@@ -40,6 +40,9 @@ export default function Home() {
   const [correct_answer, setCorrect_answer] = useState("");
   const [isClickedForQuestionPage, setIsClickedForQuestionPage] = useState(false) //I THINK IT SUCS
 
+
+  const { connectToSocket, socket } = UserSocket();
+
   function updateClieckedForQuestionPage(data : boolean){
     setIsClickedForQuestionPage(data);
   }
@@ -53,9 +56,7 @@ export default function Home() {
   }
 
   const ConnectToRoom = async (room_id: string, nickname: string) => {
-    const URL = process.env.NODE_ENV === 'production' ? 'https://riddlezoneserver-13f8751c3253.herokuapp.com/' : 'localhost:3001';
 
-    socket = await io(URL);
 
 
     if(nickname == ""){

@@ -1,9 +1,13 @@
+"use client"
+
 import { io } from "socket.io-client";
 import "./MenuPage.css";
 import { motion } from "framer-motion";
 
 import React, { useState } from "react";
 import { set } from "firebase/database";
+
+import { redirect } from "next/navigation";
 
 interface MenuPageProps {
   updateRoomID: (newValue: string) => void;
@@ -16,7 +20,6 @@ const MenuPage: React.FC<MenuPageProps> = ({
   socket,
   ConnectToRoom,
 }) => {
-
   //inputValue - roomid
   //inputValue2 - nickname
   const [inputValue, setInputValue] = useState("");
@@ -32,6 +35,7 @@ const MenuPage: React.FC<MenuPageProps> = ({
   };
 
   //przejiesc to wyzej
+
 
   function buttonHandler() {
     if (isClicked) {
@@ -50,6 +54,14 @@ const MenuPage: React.FC<MenuPageProps> = ({
     }
   }
 
+  function CreateRoomButton(){
+    if (isClicked) {
+      return;
+    }
+
+    redirect("/login")
+  }
+
   // jezeli jest join a room to jest room id do otawrcia etc.
   const [modalSet, setModalSet] = useState("");
 
@@ -57,28 +69,28 @@ const MenuPage: React.FC<MenuPageProps> = ({
     <div className="MainSection">
       <div className="ManageSection">
         <div className="rooms_container">
-       
+          {(modalSet == "joinroom") && (
+            <>
               <div className="input-wrapper">
-              <h4 className="input-description">NICKNAME</h4>
-              <input
-                type="text"
-                value={inputValue2}
-                onChange={handleInputChange2}
-                placeholder="Enter nickname"
-              />
-            </div>
-          {(modalSet == "joinroom" || modalSet == "createroom") && (
-            <div className="input-wrapper">
-              <h4 className="input-description">ROOM ID</h4>
-              <input
-                type="text"
-                value={inputValue}
-                onChange={handleInputChange}
-                placeholder="Enter room id"
-              />
-            </div>
+                <h4 className="input-description">NICKNAME</h4>
+                <input
+                  type="text"
+                  value={inputValue2}
+                  onChange={handleInputChange2}
+                  placeholder="Enter nickname"
+                />
+              </div>
+              <div className="input-wrapper">
+                <h4 className="input-description">ROOM ID</h4>
+                <input
+                  type="text"
+                  value={inputValue}
+                  onChange={handleInputChange}
+                  placeholder="Enter room id"
+                />
+              </div>
+            </>
           )}
-          
         </div>
         <div className="JoinRoomSection">
           <div className="menuPage_button-wrapper">
@@ -89,7 +101,9 @@ const MenuPage: React.FC<MenuPageProps> = ({
             >
               <motion.button
                 className="button"
-                onClick={() => {buttonHandler()}}
+                onClick={() => {
+                  buttonHandler();
+                }}
               >
                 <h2
                   className="button-text"
@@ -106,7 +120,10 @@ const MenuPage: React.FC<MenuPageProps> = ({
                 setModalSet("createroom");
               }}
             >
-              <button className="button" onClick={() => {buttonHandler()}}>
+              <a
+                className="button"
+                href="/login"
+              >
                 <motion.h2
                   className="button-text"
                   style={{
@@ -116,7 +133,7 @@ const MenuPage: React.FC<MenuPageProps> = ({
                   {" "}
                   CREATE A ROOM{" "}
                 </motion.h2>
-              </button>
+              </a>
             </div>
           </div>
           <div className="exit-wrapper">
