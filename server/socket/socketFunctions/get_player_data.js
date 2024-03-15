@@ -3,6 +3,8 @@ const db = require("../../db/firebase");
 
 function get_player_data(socket, io) {
   socket.on("get_player_data", async (room_id) => {
+    console.log("ROOM ID: ", room_id);
+
     const docRef = db
       .collection("rooms")
       .doc(room_id)

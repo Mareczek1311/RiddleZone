@@ -4,7 +4,7 @@ const db = require("../../db/firebase");
 function get_player_list(socket, io) {
   socket.on("get_player_list", (room_id) => {
     console.log("===GET_PLAYER_LIST===");
-
+    console.log("ROOM ID: ", room_id);
     const docRef = db.collection("rooms").doc(room_id).collection("players");
 
     docRef.get().then((snapshot) => {

@@ -37,19 +37,14 @@ const MenuPage: React.FC<MenuPageProps> = ({
   //przejiesc to wyzej
 
 
-  function buttonHandler() {
+  async function buttonHandler() {
     if (isClicked) {
       return;
     }
 
     if (modalSet == "joinroom" && isClicked == false) {
       setIsClicked(true);
-
-      ConnectToRoom(inputValue, inputValue2);
-    }
-    if (modalSet == "createroom" && isClicked == false) {
-      setIsClicked(true);
-
+      await updateRoomID(inputValue);
       ConnectToRoom(inputValue, inputValue2);
     }
   }
