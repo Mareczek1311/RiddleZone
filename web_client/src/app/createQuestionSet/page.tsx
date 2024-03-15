@@ -6,16 +6,15 @@ import "./QuizSetMakerPage.css";
 import { motion } from "framer-motion";
 import { redirect } from "next/navigation";
 import { UserAuth } from "../context/authContext";
+import { UserSocket } from "../context/socketContext";
 
-interface QuizSetMakerPageProps {
-  socket: any;
-}
 
-const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({
-  socket,
+
+const QuizSetMakerPage = ({
 }) => {
 
   const { user, googleSignIn, logOut } = UserAuth();
+  const { socket } = UserSocket();
 
   const [nameSetInputValue, setNameSetInputValue] = useState("");
   const [questionInputValue, setQuestionInputValue] = useState("");
@@ -46,6 +45,14 @@ const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({
     setQuestionList([...questionList]);
     setQuestionCounter(questionCounter - 1);
     setQuestionIndex(questionIndex - 1);
+  }
+
+  function Create() {
+    const quiz = {
+      name: nameSetInputValue,
+      questions: questionList,
+    };
+    socket.emit("create_quiz", quiz);
   }
 
   function switchQuestion(direction: number) {
@@ -220,6 +227,18 @@ const QuizSetMakerPage: React.FC<QuizSetMakerPageProps> = ({
                     <motion.h2 className="button-text" style={{}}>
                       {" "}
                       Delete Question{" "}
+                    </motion.h2>
+                  </button>
+
+                  <button
+                    className="button"
+                    onClick={() => {
+                      Create();
+                    }}
+                  >
+                    <motion.h2 className="button-text" style={{}}>
+                      {" "}
+                      Create{" "}
                     </motion.h2>
                   </button>
                 </div>

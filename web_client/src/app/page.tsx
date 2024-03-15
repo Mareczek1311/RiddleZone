@@ -19,9 +19,7 @@ import QuestionPage from "./components/QuestionPage/QuestionPage";
 import MessagePage from "./components/MessagePage/MessagePage";
 import EndPage from "./components/EndPage/EndPage";
 import { redirect } from "next/navigation";
-
-var socket: any;
-socket = null;
+import { UserSocket } from './context/socketContext';
 
 export default function Home() {
 
@@ -40,12 +38,16 @@ export default function Home() {
   const [correct_answer, setCorrect_answer] = useState("");
   const [isClickedForQuestionPage, setIsClickedForQuestionPage] = useState(false) //I THINK IT SUCS
 
+
+  var { socket, connectToSocket } = UserSocket();
+
   function updateClieckedForQuestionPage(data : boolean){
     setIsClickedForQuestionPage(data);
   }
 
   function updateRoomID(room_id: string) {
     setRoomID(room_id);
+    return true
   }
 
   function updateStarted(started: boolean) {
@@ -53,31 +55,27 @@ export default function Home() {
   }
 
   const ConnectToRoom = async (room_id: string, nickname: string) => {
-    const URL = process.env.NODE_ENV === 'production' ? 'https://riddlezoneserver-13f8751c3253.herokuapp.com/' : 'localhost:3001';
-
-    socket = await io(URL);
-
+    socket = connectToSocket();
 
     if(nickname == ""){
       nickname = "PLAYER" + Math.floor(Math.random() * 1000); 
     }
 
+
+    socket.emit("connect_emit");
     console.log("Connecting to room: ", room_id);
-    socket.on("connect", async () => {
+
+    socket.on("connect_on", async () => {
       console.log("Connected to server");
       socket.emit("connect_to_room", { room_id, nickname });
     
 
       socket.on("get_room_id", async (room_id: string) => {
-        console.log("Room ID: ", room_id);
-        updateRoomID(room_id);
-        
-        await socket.emit("get_player_data", room_id);
+
+        socket.emit("get_player_data", room_id);
   
       });
     });
-
-   
   };
   useEffect(() => {
   if(socket != null){
@@ -119,8 +117,7 @@ export default function Home() {
     socket.on("send_player_data", (data: any) => {
       setPlayerData(data);
       console.log("PlayerData: ", data);
-
-        socket.emit("get_player_list", room_id);
+      socket.emit("get_player_list", room_id);
     });
 
     socket.on("send_questionSet", () => {
@@ -166,6 +163,7 @@ export default function Home() {
   }
   , [socket]);
 
+
   useEffect(() => {
     // Na unmountu komponentu rozłączamy socket
     return () => {
@@ -176,23 +174,16 @@ export default function Home() {
     };
   }, []);
 
-  useEffect(()=>{
-    console.log(user)
-  },[user])
-
-
-
-  
   const [isOnMainPage, setIsOnMainPage] = useState(true);
   useEffect(() => {
+    
     room_id === "" ? setIsOnMainPage(true) : setIsOnMainPage(false);
+
   }, [room_id])
   return (
     <div className="App">
       <Navbar isOnMainPage={isOnMainPage} />
-
       {
-
       true 
       ? (
         <div>

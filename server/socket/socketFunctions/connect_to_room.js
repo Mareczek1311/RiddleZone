@@ -49,6 +49,9 @@ const db = require("../../db/firebase");
 
 
 function connect_to_room(socket, io) {
+
+  socket.emit("connect_on")
+
   socket.on("connect_to_room", async (data) => {
     console.log("===CONNECT_TO_ROOM===");
 
@@ -67,6 +70,8 @@ function connect_to_room(socket, io) {
       socket.id,
       data.nickname
     );
+      
+    console.log("ROOM ID: ", data.room_id);
 
     io.to(data.room_id).emit("get_room_id", data.room_id);
   });

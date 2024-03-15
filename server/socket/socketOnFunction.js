@@ -11,12 +11,17 @@ const get_player_list = require("./socketFunctions/get_player_list");
 const set_state = require("./socketFunctions/set_state");
 const start_game = require("./socketFunctions/start_game");
 const disconnect = require("./socketFunctions/disconnect");
+const create_quiz = require("./socketFunctions/create_quiz");
 
 function socketOnFunction(socket, io) {
     console.log("===!CONNECTION!===");
     socket.connectedToRoom = false;
 
-    connect_to_room(socket, io);
+    socket.on("connect_emit", () => {
+
+        console.log("ee")
+        connect_to_room(socket, io);
+    })
     skip_question(socket, io);
     restart_game(socket, io);
     get_question_list(socket, io);
@@ -28,7 +33,7 @@ function socketOnFunction(socket, io) {
     set_state(socket, io);
     start_game(socket, io);
     disconnect(socket, io);
-
+    create_quiz(socket, io);
 }
 
 module.exports = socketOnFunction;
