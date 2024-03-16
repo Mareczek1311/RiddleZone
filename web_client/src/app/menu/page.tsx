@@ -15,9 +15,12 @@ export default function Menu(){
     }, [user])
 
     return (
-        <div>
-            <button onClick={logOut}> LogOut</button>
-            <Link href="/createQuestionSet">Create new Quiz</Link>
+        <div className="MainSection">
+            <div className="ManageSection">
+                <h1>Menu</h1>
+                <Link href="/createQuestionSet">Create new Quiz</Link>
+                <button onClick={logOut}> LogOut</button>
+            </div>
         </div>
     )
 }

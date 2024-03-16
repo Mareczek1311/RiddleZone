@@ -3,6 +3,8 @@
 import { UserAuth } from "../context/authContext";
 import { useEffect, useState } from "react";
 import { redirect } from "next/navigation";
+import "./LoginPage.css"
+import { motion } from "framer-motion";
 
 export default function LoginPage() {
 
@@ -11,14 +13,6 @@ export default function LoginPage() {
     const handleSignIn = async () => {
         try {
           await googleSignIn();
-        } catch (error) {
-          console.log(error);
-        }
-      };
-    
-      const handleSignOut = async () => {
-        try {
-          await logOut();
         } catch (error) {
           console.log(error);
         }
@@ -38,11 +32,28 @@ export default function LoginPage() {
 
     return (
       <div>
-        <div>
-            <h1>Sing In Page</h1>
-            <button onClick={handleSignIn}>
-                Sign In with Google
-            </button>
+        <div className="MainSection">
+          <div className="ManageSection">
+            <h1 >SIGN IN</h1>
+            <div className="menuPage_button-wrapper">
+            <div>
+              <motion.button
+                className="button"
+                onClick={() => {
+                  handleSignIn();
+                }}
+              >
+                <h2
+                  className="button-text"
+                  style={{
+                  }}
+                >
+                  SIGN IN WITH GOOGLE
+                </h2>
+              </motion.button>
+            </div>
+            </div>
+            </div>
         </div>
      </div>
     );
