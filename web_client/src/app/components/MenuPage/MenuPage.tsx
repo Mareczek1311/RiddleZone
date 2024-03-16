@@ -121,6 +121,7 @@ const MenuPage: React.FC<MenuPageProps> = ({
 
                 >
               <Link
+                className="button"
                 href="/login"
               >
                 <motion.h2
