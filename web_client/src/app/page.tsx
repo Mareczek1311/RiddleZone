@@ -37,6 +37,7 @@ export default function Home() {
   const [correctQuestion, setCorrectQuestion] = useState(false);
   const [correct_answer, setCorrect_answer] = useState("");
   const [isClickedForQuestionPage, setIsClickedForQuestionPage] = useState(false) //I THINK IT SUCS
+  const [refresh, setRefresh] = useState(1);
 
 
   var { socket, connectToSocket } = UserSocket();
@@ -55,12 +56,12 @@ export default function Home() {
   }
 
   const ConnectToRoom = async (room_id: string, nickname: string) => {
-    socket = connectToSocket();
 
     if(nickname == ""){
       nickname = "PLAYER" + Math.floor(Math.random() * 1000); 
     }
 
+    setRefresh(refresh + 1);
 
     socket.emit("connect_emit");
     console.log("Connecting to room: ", room_id);
@@ -71,7 +72,7 @@ export default function Home() {
     
 
       socket.on("get_room_id", async (room_id: string) => {
-
+        updateRoomID(room_id);
         socket.emit("get_player_data", room_id);
   
       });
@@ -100,7 +101,6 @@ export default function Home() {
     socket.on("error_send_question", () => {
       console.log("Error: ", "No question set selected");
       socket.emit("get_question", room_id);
-      
     })
 
     socket.on("send_player_list", (playerList: []) => {
@@ -161,7 +161,7 @@ export default function Home() {
     })
   }
   }
-  , [socket]);
+  , [refresh]);
 
 
   useEffect(() => {
