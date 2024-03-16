@@ -8,6 +8,7 @@ import React, { useState } from "react";
 import { set } from "firebase/database";
 
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 interface MenuPageProps {
   updateRoomID: (newValue: string) => void;
@@ -115,7 +116,11 @@ const MenuPage: React.FC<MenuPageProps> = ({
                 setModalSet("createroom");
               }}
             >
-              <a
+              <motion.button
+                  className="button"
+
+                >
+              <Link
                 className="button"
                 href="/login"
               >
@@ -128,7 +133,9 @@ const MenuPage: React.FC<MenuPageProps> = ({
                   {" "}
                   CREATE A ROOM{" "}
                 </motion.h2>
-              </a>
+              </Link>
+              </motion.button>
+
             </div>
           </div>
           <div className="exit-wrapper">
