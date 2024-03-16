@@ -14,6 +14,10 @@ export const SocketContextProvider = ({ children } : any) => {
         return newSocket;
     }
 
+    useEffect(() => {
+        connectToSocket();
+    }, []);
+
     return <socketContext.Provider value={{socket, connectToSocket}}>{children}</socketContext.Provider>;
 }
 
