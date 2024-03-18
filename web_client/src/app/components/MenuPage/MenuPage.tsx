@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { io } from "socket.io-client";
 import "./MenuPage.css";
@@ -37,7 +37,6 @@ const MenuPage: React.FC<MenuPageProps> = ({
 
   //przejiesc to wyzej
 
-
   async function buttonHandler() {
     if (isClicked) {
       return;
@@ -50,14 +49,6 @@ const MenuPage: React.FC<MenuPageProps> = ({
     }
   }
 
-  function CreateRoomButton(){
-    if (isClicked) {
-      return;
-    }
-
-    redirect("/login")
-  }
-
   // jezeli jest join a room to jest room id do otawrcia etc.
   const [modalSet, setModalSet] = useState("");
 
@@ -65,7 +56,7 @@ const MenuPage: React.FC<MenuPageProps> = ({
     <div className="MainSection">
       <div className="ManageSection">
         <div className="rooms_container">
-          {(modalSet == "joinroom") && (
+          {modalSet == "joinroom" && (
             <>
               <div className="input-wrapper">
                 <h4 className="input-description">NICKNAME</h4>
@@ -111,31 +102,14 @@ const MenuPage: React.FC<MenuPageProps> = ({
                 </h2>
               </motion.button>
             </div>
-            <div
-              onClick={() => {
-                setModalSet("createroom");
-              }}
-            >
-              <motion.button
-                  className="button"
-
-                >
-              <Link
-                className="button"
-                href="/login"
-              >
-                <motion.h2
-                  className="button-text"
-                  style={{
-                    letterSpacing: modalSet == "createroom" ? "6px" : undefined,
-                  }}
-                >
-                  {" "}
-                  CREATE A ROOM{" "}
-                </motion.h2>
-              </Link>
+            <div className="menuPage_button-wrapper">
+            <div>
+              <motion.button className="button">
+                <Link href="/login">
+                  <motion.h2 className="button-text"> CREATE A ROOM </motion.h2>
+                </Link>
               </motion.button>
-
+            </div>
             </div>
           </div>
           <div className="exit-wrapper">

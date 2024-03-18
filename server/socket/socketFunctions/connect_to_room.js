@@ -1,79 +1,49 @@
-async function addPlayerToRoomFirebase(room_id, player_id, real_player_id) {
-  const playersCollectionRef = await db
-    .collection("rooms")
-    .doc(room_id)
-    .collection("players");
-  var isEmpty = true;
-  await playersCollectionRef
-    .get()
-    .then((snapshot) => {
-      if (!snapshot.empty) {
-        isEmpty = false;
-      }
-    })
-    .catch((error) => {
-      console.error("Wystąpił błąd podczas pobierania dokumentów: ", error);
-    });
 
-  const docRef = await db
-    .collection("rooms")
-    .doc(room_id)
-    .collection("players")
-    .doc(player_id);
-
-  console.log("isEmpty: ", isEmpty);
-
-  if (isEmpty) {
-    docRef
-      .set({
-        isAdmin: true,
-        isReady: false,
-        realID: real_player_id,
-        score: 0,
-      })
-      .then(() => console.log("Field added successfully"))
-      .catch((error) => console.error("ERROR: Error adding field: ", error));
-  } else {
-    docRef
-      .set({
-        isAdmin: false,
-        isReady: false,
-        realID: real_player_id,
-        score: 0,
-      })
-      .then(() => console.log("Field added successfully"))
-      .catch((error) => console.error("ERROR: Error adding field: ", error));
-  }
-}
 const db = require("../../db/firebase");
 
-
 function connect_to_room(socket, io) {
-
-  socket.emit("connect_on")
-
   socket.on("connect_to_room", async (data) => {
-    console.log("===CONNECT_TO_ROOM===");
+    const room_id = data.room_id;
+    const real_player_id = data.nickname;
 
-    socket.connectedToRoom = true;
-
-    if (data.room_id == "") {
-      data.room_id = "room" + Math.floor(Math.random() * 1000);
+    if (room_id == "") {
+      console.log("ERROR: Room ID is empty");
+      socket.emit("RES_connect_to_room", "ERROR ROOM ID EMPTY");
+      return;
     }
 
-    socket.join(data.room_id);
-    socket.room_id = data.room_id;
-    console.log("ROOM ID: ", data.room_id);
+    //create room if not exists
+    const roomRef = await db.collection("rooms").doc(room_id);
+    const doc = await roomRef.get();
 
-    const res = await addPlayerToRoomFirebase(
-      data.room_id,
-      socket.id,
-      data.nickname
-    );
-      
-    console.log("ROOM ID: ", data.room_id);
+    if(!doc.exists) {
+      console.log("ERROR: Room does not exist");
+      socket.emit("RES_connect_to_room", "ERROR");
+      return;
+    }
 
-    io.to(data.room_id).emit("get_room_id", data.room_id);
+    const docRef = await db.collection("rooms").doc(room_id).collection("players").doc(socket.id);
+    const playerDoc = await docRef.get();
+    if (playerDoc.exists) {
+      console.log("ERROR: Player already exists");
+      socket.emit("RES_connect_to_room", "ERROR PLAYER EXISTS");
+      return;
+    }
+
+    docRef
+    .set({
+      isAdmin: false,
+      isReady: false,
+      realID: real_player_id,
+      score: 0,
+    })
+    .then(() => console.log("Field added successfully"))
+
+    socket.connectedToRoom = true;
+    socket.join(room_id);
+    socket.room_id = room_id;
+
+    io.to(room_id).emit("RES_connect_to_room", { room_id: room_id });
   });
 }
 

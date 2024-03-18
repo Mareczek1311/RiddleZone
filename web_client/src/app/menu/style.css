@@ -1,18 +1,17 @@
 .MainSection{
     display: flex;
     justify-content: center;
-    align-items: end;
-    width: 100%;
-    height: 50vh !important;
+    height: 100vh;
     text-align: center;
   }
-  
+
   .ManageSection{
     display: flex;
     align-items: center !important;
     justify-content: space-between !important;
     flex-direction: column;
     min-height: 30%;
+    
     width: 100%;
   }
   
