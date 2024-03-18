@@ -12,6 +12,7 @@ const set_state = require("./socketFunctions/set_state");
 const start_game = require("./socketFunctions/start_game");
 const disconnect = require("./socketFunctions/disconnect");
 const create_quiz = require("./socketFunctions/create_quiz");
+const GET_REQ_quizzies = require("./socketFunctions/GET_REQ_quizzies");
 
 function socketOnFunction(socket, io) {
     console.log("===!CONNECTION!===");
@@ -34,6 +35,7 @@ function socketOnFunction(socket, io) {
     start_game(socket, io);
     disconnect(socket, io);
     create_quiz(socket, io);
+    GET_REQ_quizzies(socket, io);
 }
 
 module.exports = socketOnFunction;
