@@ -67,15 +67,19 @@ export default function Home() {
     console.log("Connecting to room: ", room_id);
 
     socket.on("connect_on", async () => {
-      console.log("Connected to server");
       socket.emit("connect_to_room", { room_id, nickname });
-    
-
-      socket.on("get_room_id", async (room_id: string) => {
-        updateRoomID(room_id);
-        socket.emit("get_player_data", room_id);
-  
-      });
+      socket.on("RES_connect_to_room", (data : any) => {
+        console.log(data.room_id)
+        if(data.room_id == "ERROR")
+        {
+          console.log("No room found");
+          updateRoomID("");
+          return;
+        }
+        console.log("Connected to server");
+        updateRoomID(data.room_id);
+        socket.emit("get_player_data", data.room_id);
+      })
     });
   };
   useEffect(() => {

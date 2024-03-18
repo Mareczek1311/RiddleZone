@@ -9,6 +9,9 @@ export const SocketContextProvider = ({ children } : any) => {
     const [socket, setSocket] = useState(null);
     
     function connectToSocket() {
+        if(socket != null) {
+            return socket;
+        }
         const newSocket = io("http://localhost:3001");
         setSocket(newSocket);
         return newSocket;

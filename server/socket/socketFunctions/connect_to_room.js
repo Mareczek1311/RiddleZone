@@ -1,4 +1,20 @@
-async function addPlayerToRoomFirebase(room_id, player_id, real_player_id) {
+async function addPlayerToRoomFirebase(
+  room_id,
+  player_id,
+  real_player_id,
+  socket
+) {
+
+  console.log("room_id: ", room_id);
+
+  //check if room_id exist in database
+  const roomRef = await db.collection("rooms").doc(room_id).get() 
+  if (!roomRef.exists) {
+    console.log("No such document!");
+    return false;
+  } 
+
+
   const playersCollectionRef = await db
     .collection("rooms")
     .doc(room_id)
@@ -44,36 +60,41 @@ async function addPlayerToRoomFirebase(room_id, player_id, real_player_id) {
       .then(() => console.log("Field added successfully"))
       .catch((error) => console.error("ERROR: Error adding field: ", error));
   }
+
+  return true;
 }
 const db = require("../../db/firebase");
 
-
 function connect_to_room(socket, io) {
-
-  socket.emit("connect_on")
+  socket.emit("connect_on");
 
   socket.on("connect_to_room", async (data) => {
     console.log("===CONNECT_TO_ROOM===");
 
-    socket.connectedToRoom = true;
-
     if (data.room_id == "") {
-      data.room_id = "room" + Math.floor(Math.random() * 1000);
+      socket.emit("RES_connect_to_room", "ERROR");
     }
+
+    const res = await addPlayerToRoomFirebase(
+      data.room_id,
+      socket.id,
+      data.nickname,
+      socket
+    );
+
+    if (res == false) {
+      socket.emit("RES_connect_to_room", { room_id: "ERROR" });
+      console.log("ERROR - NO ROOM");
+      return false;
+    }
+
+    socket.connectedToRoom = true;
 
     socket.join(data.room_id);
     socket.room_id = data.room_id;
     console.log("ROOM ID: ", data.room_id);
 
-    const res = await addPlayerToRoomFirebase(
-      data.room_id,
-      socket.id,
-      data.nickname
-    );
-      
-    console.log("ROOM ID: ", data.room_id);
-
-    io.to(data.room_id).emit("get_room_id", data.room_id);
+    io.to(data.room_id).emit("RES_connect_to_room", {room_id: data.room_id}  );
   });
 }
 

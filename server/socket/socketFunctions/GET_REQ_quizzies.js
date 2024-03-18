@@ -13,8 +13,6 @@ function GET_REQ_quizzies(socket, io) {
                 }
             });
         });
-        console.log("ARR: ",arr);
-        console.log("SENDING QUIZZIES TO CLIENT...");
         socket.emit("GET_RES_quizzies", arr);
     });
 }
