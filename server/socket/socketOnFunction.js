@@ -18,11 +18,8 @@ function socketOnFunction(socket, io) {
     console.log("===!CONNECTION!===");
     socket.connectedToRoom = false;
 
-    socket.on("connect_emit", () => {
 
-        console.log("ee")
-        connect_to_room(socket, io);
-    })
+    connect_to_room(socket, io);
     skip_question(socket, io);
     restart_game(socket, io);
     get_question_list(socket, io);
