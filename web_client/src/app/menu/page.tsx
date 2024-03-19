@@ -1,16 +1,17 @@
 "use client";
 import { useEffect, useState } from "react";
 import { UserAuth } from "../context/authContext";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { UserSocket } from "../context/socketContext";
-
+import { redirect } from "next/navigation";
 export default function Menu() {
   const { user, googleSignIn, logOut } = UserAuth();
   const { socket, connectToSocket } = UserSocket();
   const [myQuizies, setMyQuizies] = useState([] as any[]);
   const [allQuizies, setAllQuizies] = useState([] as any[]);
+
+  const [roomid, setRoomid] = useState("");
 
   useEffect(() => {
     if (user == null) {
@@ -25,6 +26,20 @@ export default function Menu() {
       setMyQuizies(data);
     });
   }, []);
+
+  useEffect(() =>{
+    if(roomid != ""){
+      redirect(`/room/${roomid}`);
+    }
+  },[roomid])
+
+  const createRoom = (id : string) => {
+    socket.emit("PUT_REQ_CREATE_ROOM", {user_id: user.uid, quiz_id: id});
+    socket.on("PUT_RES_CREATE_ROOM", (data: any) => {
+      console.log("CREATE_ROOM_RES", data);
+      setRoomid(data.room_id);
+    });
+  }
 
   return (
     <div className="MainSection">
@@ -44,8 +59,8 @@ export default function Menu() {
           <h1>MY QUIZZIES</h1>
           {myQuizies.map((quiz: any, index) => {
             return (
-              <motion.button key={index} className="button">
-                <motion.h2 className="button-text"> {quiz.name} </motion.h2>
+              <motion.button key={index} className="button" onClick={() =>createRoom(quiz[1]) }>
+                <motion.h2 className="button-text"> {quiz[0].name} </motion.h2>
               </motion.button>
             );
           })}

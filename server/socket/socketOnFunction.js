@@ -13,12 +13,12 @@ const start_game = require("./socketFunctions/start_game");
 const disconnect = require("./socketFunctions/disconnect");
 const create_quiz = require("./socketFunctions/create_quiz");
 const GET_REQ_quizzies = require("./socketFunctions/GET_REQ_quizzies");
-
+const PUT_REQ_CREATE_ROOM = require("./socketFunctions/PUT_REQ_CREATE_ROOM");
 function socketOnFunction(socket, io) {
     console.log("===!CONNECTION!===");
     socket.connectedToRoom = false;
 
-
+    PUT_REQ_CREATE_ROOM(socket, io);
     connect_to_room(socket, io);
     skip_question(socket, io);
     restart_game(socket, io);

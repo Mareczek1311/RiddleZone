@@ -9,7 +9,7 @@ function GET_REQ_quizzies(socket, io) {
         await docRef.get().then((snapshot) => {
             snapshot.forEach((doc) => {
                 if(doc.data().user_id === user_id){
-                    arr.push(doc.data());
+                    arr.push([doc.data(), doc.id]);
                 }
             });
         });
