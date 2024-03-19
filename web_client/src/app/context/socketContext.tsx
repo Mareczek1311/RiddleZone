@@ -21,6 +21,15 @@ export const SocketContextProvider = ({ children } : any) => {
         connectToSocket();
     }, []);
 
+    useEffect(() => {
+        // Na unmountu komponentu rozłączamy socket
+        return () => {
+          if (socket != null) {
+            socket.disconnect();
+          }
+        };
+      }, []);
+
     return <socketContext.Provider value={{socket, connectToSocket}}>{children}</socketContext.Provider>;
 }
 

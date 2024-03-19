@@ -5,6 +5,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { UserSocket } from "../context/socketContext";
 import { redirect } from "next/navigation";
+import { userNameContext } from "../context/userNameContext";
+
 export default function Menu() {
   const { user, googleSignIn, logOut } = UserAuth();
   const { socket, connectToSocket } = UserSocket();
@@ -12,6 +14,9 @@ export default function Menu() {
   const [allQuizies, setAllQuizies] = useState([] as any[]);
 
   const [roomid, setRoomid] = useState("");
+
+  const {userName, setUserNameFunction} = userNameContext();
+
 
   useEffect(() => {
     if (user == null) {
@@ -33,7 +38,10 @@ export default function Menu() {
     }
   },[roomid])
 
-  const createRoom = (id : string) => {
+  const createRoom = async (id : string) => {
+    console.log("user id", user.uid);
+    await setUserNameFunction(user.uid);
+
     socket.emit("PUT_REQ_CREATE_ROOM", {user_id: user.uid, quiz_id: id});
     socket.on("PUT_RES_CREATE_ROOM", (data: any) => {
       console.log("CREATE_ROOM_RES", data);
