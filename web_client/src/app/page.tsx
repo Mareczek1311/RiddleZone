@@ -20,6 +20,8 @@ import MessagePage from "./components/MessagePage/MessagePage";
 import EndPage from "./components/EndPage/EndPage";
 import { redirect } from "next/navigation";
 import { UserSocket } from "./context/socketContext";
+import { set } from "firebase/database";
+import { userNameContext } from "./context/userNameContext";
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
@@ -43,7 +45,10 @@ export default function Home() {
     useState(false); //I THINK IT SUCS
   const [refresh, setRefresh] = useState(1);
 
+  const [res_room_id, setResRoomID] = useState("");
+
   var { socket, connectToSocket } = UserSocket();
+  const {userName, setUserNameFunction} = userNameContext();
 
   function updateClieckedForQuestionPage(data: boolean) {
     setIsClickedForQuestionPage(data);
@@ -59,26 +64,14 @@ export default function Home() {
   }
 
   const ConnectToRoom = async (room_id: string, nickname: string) => {
-    if (nickname == "") {
-      nickname = "PLAYER" + Math.floor(Math.random() * 1000);
-    }
 
-    setRefresh(refresh + 1);
-
-    console.log("Connecting to room: ", room_id);
-
-    socket.emit("connect_to_room", { room_id: room_id, nickname: nickname });
-    socket.on("RES_connect_to_room", (data: any) => {
-      if (data == "ERROR") {
-        console.log("No room found");
-        updateRoomID("");
-        return;
-      }
-      console.log("Connected to server");
-      updateRoomID(data.room_id);
-      socket.emit("get_player_data", data.room_id);
-    });
   };
+
+
+  useEffect(() => {
+    if(res_room_id != ""){
+    }
+  }, [res_room_id])
 
   useEffect(() => {
     if (socket != null) {
@@ -162,14 +155,7 @@ export default function Home() {
     }
   }, [refresh]);
 
-  useEffect(() => {
-    // Na unmountu komponentu rozłączamy socket
-    return () => {
-      if (socket != null) {
-        socket.disconnect();
-      }
-    };
-  }, []);
+
 
   const [isOnMainPage, setIsOnMainPage] = useState(true);
   useEffect(() => {

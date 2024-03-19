@@ -4,11 +4,12 @@ import { io } from "socket.io-client";
 import "./MenuPage.css";
 import { motion } from "framer-motion";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { set } from "firebase/database";
 
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { userNameContext } from "@/app/context/userNameContext";
 
 interface MenuPageProps {
   updateRoomID: (newValue: string) => void;
@@ -26,6 +27,9 @@ const MenuPage: React.FC<MenuPageProps> = ({
   const [inputValue, setInputValue] = useState("");
   const [inputValue2, setInputValue2] = useState("");
   const [isClicked, setIsClicked] = useState(false);
+  const [redirected, setRedirected] = useState(false);
+
+  const { userName, setUserNameFunction } = userNameContext();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -37,17 +41,28 @@ const MenuPage: React.FC<MenuPageProps> = ({
 
   //przejiesc to wyzej
 
-  async function buttonHandler() {
+   function buttonHandler() {
     if (isClicked) {
       return;
     }
 
     if (modalSet == "joinroom" && isClicked == false) {
       setIsClicked(true);
-      await updateRoomID(inputValue);
-      ConnectToRoom(inputValue, inputValue2);
+
+      if (inputValue2 == "") {
+        setInputValue2("PLAYER" + Math.floor(Math.random() * 1000))
+      }
+      setUserNameFunction(inputValue2);
+      setRedirected(true);
     }
   }
+
+  useEffect(() => {
+    if (redirected) {
+      redirect(`/room/${inputValue}`);
+    }
+  }
+  , [redirected]);
 
   // jezeli jest join a room to jest room id do otawrcia etc.
   const [modalSet, setModalSet] = useState("");
