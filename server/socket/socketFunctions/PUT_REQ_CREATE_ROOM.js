@@ -13,6 +13,7 @@ function PUT_REQ_CREATE_ROOM(socket, io) {
     await roomRef.get();
     await roomRef.set({
       isCreated: true,
+      questionSetId: data.questionSetId,
     });
 
     socket.emit("PUT_RES_CREATE_ROOM", { room_id: room_id });

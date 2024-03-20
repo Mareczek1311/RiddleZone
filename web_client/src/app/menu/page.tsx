@@ -42,7 +42,7 @@ export default function Menu() {
     console.log("user id", user.uid);
     await setUserNameFunction(user.uid);
 
-    socket.emit("PUT_REQ_CREATE_ROOM", {user_id: user.uid, quiz_id: id});
+    socket.emit("PUT_REQ_CREATE_ROOM", {user_id: user.uid, questionSetId: id});
     socket.on("PUT_RES_CREATE_ROOM", (data: any) => {
       console.log("CREATE_ROOM_RES", data);
       setRoomid(data.room_id);

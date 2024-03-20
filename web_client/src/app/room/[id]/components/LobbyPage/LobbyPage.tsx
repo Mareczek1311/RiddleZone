@@ -1,32 +1,49 @@
 import { useEffect, useState } from "react";
 import "./LobbyPage.css";
-import "../../globals.css";
+import "@/app/globals.css";
 import { motion } from "framer-motion";
+import { UserSocket } from "@/app/context/socketContext";
+import { set } from "firebase/database";
 
-interface LobbyPageProps {
-  socket: any;
+
+interface LoginPageProps {
   room_id: string;
-  playerList: string[];
-  readyCounter: number;
-  playerData: [boolean, boolean, string];
-  updateStarted: (started: boolean) => void;
 }
 
-const LobbyPage: React.FC<LobbyPageProps> = ({
-  socket,
-  room_id,
-  playerList,
-  readyCounter,
-  playerData,
-  updateStarted,
-}) => {
+const LoginPage: React.FC<LoginPageProps> = ({ room_id }) =>{
   const [ready, setReady] = useState(false);
 
+  const {socket, connectToSocket} = UserSocket();
+  const [playerSet, setPlayerSet] = useState({});
+  const [playerData, setPlayerData] = useState([]);
+  const [readyCounter, setReadyCounter] = useState(0);
+  const [started, setStarted] = useState(false);
+  const [questionSetName, setQuestionSetName] = useState("");
+  
   function handleReady() {
     setReady(!ready);
 
     socket.emit("set_state", { room_id, ready: !ready });
   }
+
+  useEffect(() => {
+
+    socket.emit("GET_REQ_ROOM_INFO", room_id);
+    socket.on("GET_RES_ROOM_INFO", (data : any) => {
+      console.log("ROOM INFO: ", data)
+      setPlayerSet(data.users);
+      setQuestionSetName(data.questionSetName);
+    })
+
+    
+
+    /*
+    socket.emit("GET_REQ_USER_INFO", room_id);
+    socket.on("GET_RES_USER_INFO", (data : any) => {
+      setPlayerData(data);
+    });
+*/
+  }, []);
 
   return (
     <motion.div className="MainSectionLobby">
@@ -34,6 +51,7 @@ const LobbyPage: React.FC<LobbyPageProps> = ({
         <motion.div className="section-title">
           <motion.h1 className="title">LOBBY</motion.h1>
           <motion.h3>ROOM ID: {room_id}</motion.h3>
+          <motion.h3>QUESTION SET: {questionSetName}</motion.h3>
         </motion.div>
         <motion.div className="players-title-wrapper">
           <motion.h1 className="players-title">PLAYERS</motion.h1>
@@ -42,7 +60,7 @@ const LobbyPage: React.FC<LobbyPageProps> = ({
         <motion.div className="main_box_container">
           <motion.div className="players_container">
             <motion.div className="player-wrapper-ex">
-              <motion.h5 className="example-text">EXAMPLE</motion.h5>
+              <motion.h5 className="example-text"></motion.h5>
               {/* <motion.div className="player-value-wrapper-ex">
                 <motion.h2 className="player-value-ex">IMG</motion.h2>
               </motion.div> */}
@@ -60,38 +78,41 @@ const LobbyPage: React.FC<LobbyPageProps> = ({
               </motion.div> */}
             </motion.div>
 
-            {
-            playerList.map((player, index) => {
-              return (
-                <motion.div className="player-wrapper" key={index}>
-                  {/* <motion.div className="player-value-wrapper">
-                    <motion.h2 className="player-value">IMG</motion.h2>
-                  </motion.div> */}
-                  <motion.div className="player-value-wrapper">
-                    <motion.h2 className="player-value">{player[0]}</motion.h2>
-                  </motion.div>
-                  {/* <motion.div className="player-value-wrapper">
-                    <motion.h2 className="player-value">LVL: 51</motion.h2>
-                  </motion.div>
-                  <motion.div className="player-value-wrapper">
-                    <motion.h2 className="player-value">PKT: 12331</motion.h2>
-                  </motion.div>
-                  <motion.div className="player-value-wrapper lastOne">
-                    <motion.h2 className="player-value lastOne">POLAND</motion.h2>
-                  </motion.div> */}
-                  {
-              player[1] ?
-                  <motion.div className="player-value-wrapper">
-                    <motion.h2 className="player-value">READY</motion.h2>
-                  </motion.div>
-                  :
-                  <motion.div className="player-value-wrapper">
-                    <motion.h2 className="player-value">NOT READY</motion.h2>
-                  </motion.div>
-            }
-                </motion.div>
-              );
-            })}
+{
+
+  playerSet ?
+
+  Object.keys(playerSet).map((key, index) => {
+    return (
+      <motion.div className="player-wrapper" key={index}>
+        <motion.h5 className="example-text">{index + 1}</motion.h5>
+        {/* <motion.div className="player-value-wrapper">
+          <motion.h2 className="player-value">{playerSet[key].img}</motion.h2>
+        </motion.div> */}
+        <motion.div className="player-value-wrapper">
+          <motion.h2 className="player-value">{playerSet[key].realID}</motion.h2>
+        </motion.div>
+        {/* <motion.div className="player-value-wrapper">
+          <motion.h2 className="player-value">{playerSet[key].level}</motion.h2>
+        </motion.div>
+        <motion.div className="player-value-wrapper">
+          <motion.h2 className="player-value">{playerSet[key].points}</motion.h2>
+        </motion.div>
+        <motion.div className="player-value-wrapper">
+          <motion.h2 className="player-value">{playerSet[key].location}</motion.h2>
+        </motion.div> */}
+        <motion.div className="player-value-wrapper">
+          <motion.h2 className="player-value">{playerSet[key].isReady ? "READY" : "UNREADY"}</motion.h2>
+        </motion.div>
+      </motion.div>
+    );
+  })
+
+  : null
+
+}
+
+
           </motion.div>
         </motion.div>
         <motion.div className="lobby_buttons-wrapper">
@@ -115,13 +136,14 @@ const LobbyPage: React.FC<LobbyPageProps> = ({
             </motion.button>
           )}
           
-          {readyCounter === playerList.length && playerData[0] ? (
+          {//readyCounter === playerData. && playerData[0] ? (
+            1==1?(
             <motion.button
               className="button"
               style={{ marginTop: "2vh" }}
               onClick={() => {
                 socket.emit("start_game", room_id);
-                updateStarted(true);
+                setStarted(true);
               }}
             >
               <motion.h1 className="button-text">Start Game</motion.h1>
@@ -133,4 +155,4 @@ const LobbyPage: React.FC<LobbyPageProps> = ({
   );
 };
 
-export default LobbyPage;
+export default LoginPage;
