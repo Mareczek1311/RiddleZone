@@ -13,7 +13,6 @@ import Footer from "./components/Footer/Footer";
 import { User } from "firebase/auth";
 import LoginPage from "./login/page";
 import MenuPage from "./components/MenuPage/MenuPage";
-import LobbyPage from "./components/LobbyPage/LobbyPage";
 import QuestionPick from "./components/QuestionPick/QuestionPick";
 import QuestionPage from "./components/QuestionPage/QuestionPage";
 import MessagePage from "./components/MessagePage/MessagePage";
@@ -173,14 +172,7 @@ export default function Home() {
               ConnectToRoom={ConnectToRoom}
             />
           ) : !started ? (
-            <LobbyPage
-              socket={socket}
-              room_id={room_id}
-              playerList={playerList}
-              readyCounter={readyCounter}
-              playerData={playerData}
-              updateStarted={updateStarted}
-            />
+              <></>
           ) : !questionSetSelected ? (
             playerData[0] ? (
               <QuestionPick socket={socket} room_id={room_id} />
