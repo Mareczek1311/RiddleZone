@@ -15,7 +15,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ room_id }) =>{
 
   const {socket, connectToSocket} = UserSocket();
   const [playerSet, setPlayerSet] = useState({});
-  const [playerData, setPlayerData] = useState([]);
   const [readyCounter, setReadyCounter] = useState(0);
   const [started, setStarted] = useState(false);
   const [questionSetName, setQuestionSetName] = useState("");
@@ -29,18 +28,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ room_id }) =>{
   }
 
   useEffect(() => {
-
     socket.emit("GET_REQ_ROOM_INFO", room_id);
-
-
-    
-
-    /*
-    socket.emit("GET_REQ_USER_INFO", room_id);
-    socket.on("GET_RES_USER_INFO", (data : any) => {
-      setPlayerData(data);
-    });
-*/
   }, []);
 
   useEffect(() => {
@@ -48,6 +36,16 @@ const LoginPage: React.FC<LoginPageProps> = ({ room_id }) =>{
       console.log("ROOM INFO: ", data)
       setPlayerSet(data.users);
       setQuestionSetName(data.questionSetName);
+
+      let readyCount = 0;
+      Object.keys(data.users).map((key, index) => {
+        if (data.users[key].isReady) {
+          readyCount++;
+        }
+      });
+      setReadyCounter(readyCount);
+
+
     })
   }, [socket]);
 
@@ -108,7 +106,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ room_id }) =>{
           <motion.h2 className="player-value">{playerSet[key].location}</motion.h2>
         </motion.div> */}
         <motion.div className="player-value-wrapper">
-          <motion.h2 className="player-value">{playerSet[key].isReady ? "READY" : "UNREADY"}</motion.h2>
+          <motion.h2 className="player-value">{playerSet[key].isReady ? "UNREADY" : "READY"}</motion.h2>
         </motion.div>
       </motion.div>
     );
@@ -117,8 +115,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ room_id }) =>{
   : null
 
 }
-
-
           </motion.div>
         </motion.div>
         <motion.div className="lobby_buttons-wrapper">
@@ -142,8 +138,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ room_id }) =>{
             </motion.button>
           )}
           
-          {//readyCounter === playerData. && playerData[0] ? (
-            1==1?(
+          {
+            playerSet[socket.id] && readyCounter == Object.keys(playerSet).length ? (
             <motion.button
               className="button"
               style={{ marginTop: "2vh" }}
@@ -154,7 +150,20 @@ const LoginPage: React.FC<LoginPageProps> = ({ room_id }) =>{
             >
               <motion.h1 className="button-text">Start Game</motion.h1>
             </motion.button>
-          ) : null}
+          ) : null
+          /*
+          <motion.button
+              className="button"
+              style={{ marginTop: "2vh" }}
+              onClick={() => {
+                socket.emit("start_game", room_id);
+                setStarted(true);
+              }}
+            >
+              <motion.h1 className="button-text">FORCE Start Game</motion.h1>
+            </motion.button>*/
+          
+          }
         </motion.div>
       </motion.div>
     </motion.div>
