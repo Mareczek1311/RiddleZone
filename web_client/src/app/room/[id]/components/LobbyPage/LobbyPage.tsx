@@ -23,17 +23,15 @@ const LoginPage: React.FC<LoginPageProps> = ({ room_id }) =>{
   function handleReady() {
     setReady(!ready);
 
-    socket.emit("set_state", { room_id, ready: !ready });
+    socket.emit("PUT_REQ_SET_STATE", { room_id: room_id, ready: !ready });
+    socket.emit("GET_REQ_ROOM_INFO", room_id);
+
   }
 
   useEffect(() => {
 
     socket.emit("GET_REQ_ROOM_INFO", room_id);
-    socket.on("GET_RES_ROOM_INFO", (data : any) => {
-      console.log("ROOM INFO: ", data)
-      setPlayerSet(data.users);
-      setQuestionSetName(data.questionSetName);
-    })
+
 
     
 
@@ -44,6 +42,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ room_id }) =>{
     });
 */
   }, []);
+
+  useEffect(() => {
+    socket.on("GET_RES_ROOM_INFO", (data : any) => {
+      console.log("ROOM INFO: ", data)
+      setPlayerSet(data.users);
+      setQuestionSetName(data.questionSetName);
+    })
+  }, [socket]);
 
   return (
     <motion.div className="MainSectionLobby">

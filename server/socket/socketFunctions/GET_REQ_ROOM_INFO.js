@@ -22,7 +22,7 @@ function GET_REQ_ROOM_INFO(socket, io) {
             users: users,
         }
 
-        socket.emit("GET_RES_ROOM_INFO", data);
+        io.to(room_id).emit("GET_RES_ROOM_INFO", data);
         
     });
 }
