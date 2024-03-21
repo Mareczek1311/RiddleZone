@@ -9,10 +9,20 @@ function GET_REQ_QUESTION(socket, io) {
         const questionSetId = docQuestionSetId.data().questionSetId
         const currentQuestion = docQuestionSetId.data().currentQuestion
 
+        console.log("questionSetId: ", questionSetId);
+        console.log("currentQuestion: ", currentQuestion);
 
-        const docRef = await db.collection("questions").doc(questionSetId).collection("questions").doc(currentQuestion).get();
+        const docRef = await db.collection("questions").doc(questionSetId).collection("questions").doc(currentQuestion.toString()).get();
 
-        socket.emit("GET_RES_QUESTION", docRef.data());
+
+        const arr = [docRef.data()["a"], docRef.data()["b"], docRef.data()["c"], docRef.data()["d"]]
+
+        const data = {
+            questions: arr,
+            name: docRef.data()["name"]
+        }
+
+        socket.emit("GET_RES_QUESTION", data);
     });
 }
 

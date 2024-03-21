@@ -18,6 +18,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
     const [correct_answer, setCorrectAnswer] = useState("");
     const [currQuestion, setCurrQuestion] = useState(["", "", "", "", ""]);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [questionName, setQuestionName] = useState("")
 
     function sendAnswer(answer: string) {
         if (isClicked) {
@@ -42,22 +43,20 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
     }
 
     useEffect(() => {
-
+      console.log("room_id: ", room_id)
       socket.emit("GET_REQ_ROOM_INFO", room_id);
       socket.on("GET_RES_ROOM_INFO", (data: any) => {
         // we can optimise that
-        
-
         setIsAdmin(data.users[socket.id].isAdmin);
+
+        socket.emit("GET_REQ_QUESTION", room_id);
       })
-
-      socket.emit("GET_REQ_QUESTION", room_id);
-
     }, []);
 
     useEffect(() =>{
       socket.on("GET_RES_QUESTION", (data: any) => {
-        setCurrQuestion(data.question);
+        setCurrQuestion(data.questions);
+        setQuestionName(data.name)
         setCorrectAnswer("");
         updateIsClicked(false);
       })
@@ -73,8 +72,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
         <div>        
             <motion.div className="MainSectionLobby">
             <motion.div className="ManageSectionLobby">
-            <motion.h1>{currQuestion[0]}</motion.h1>
-
+            <motion.h1>{questionName}</motion.h1>
             {
                 !(correct_answer == "") ?
             <div className="question-page-container">
@@ -82,7 +80,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
                     "a" === correct_answer ?
                     < div className="question-page-answer-correct button">
                         <motion.h1 className="button-text question-page-answer-correct-text">
-                        {currQuestion[1]}
+                        {currQuestion[0]}
                         </motion.h1>
                     </div>
                     :
@@ -102,7 +100,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
                     :
                     <div className=" question-page-answer-uncorrent button">
                         <motion.h1 className="button-text question-page-answer-uncorrent-text">
-                        {currQuestion[2]}
+                        {currQuestion[3]}
                         </motion.h1>
                     </div>
                 }
@@ -110,7 +108,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
                     "c" === correct_answer ?
                     <div className="question-page-answer-correct button">
                         <motion.h1 className="button-text question-page-answer-correct-text">
-                        {currQuestion[3]}
+                        {currQuestion[4]}
                         </motion.h1>
                     </div>
                     :
@@ -147,7 +145,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
               className="button"
             >
               <motion.h1 className="button-text thinner">
-                {currQuestion[1]}
+                {currQuestion[0]}
               </motion.h1>
             </motion.button>
           </motion.div>
@@ -158,7 +156,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
               }}
               className="button"
             >
-              <motion.h1 className="button-text">{currQuestion[2]}</motion.h1>
+              <motion.h1 className="button-text">{currQuestion[1]}</motion.h1>
             </motion.button>
           </motion.div>
           <motion.div className="question-page-answer">
@@ -168,7 +166,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
               }}
               className="button"
             >
-              <motion.h1 className="button-text">{currQuestion[3]}</motion.h1>
+              <motion.h1 className="button-text">{currQuestion[2]}</motion.h1>
             </motion.button>
           </motion.div>
           <motion.div className="question-page-answer">
@@ -178,7 +176,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
               }}
               className="button"
             >
-              <motion.h1 className="button-text">{currQuestion[4]}</motion.h1>
+              <motion.h1 className="button-text">{currQuestion[3]}</motion.h1>
             </motion.button>
           </motion.div>
           {isAdmin ?
