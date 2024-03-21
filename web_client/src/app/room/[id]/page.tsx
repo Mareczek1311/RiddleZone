@@ -18,11 +18,9 @@ export default function Page({ params }: { params: { id: string } }) {
   useEffect(() => {
     console.log(params.id)
 
-
     if(socket == null){
       connectToSocket();
       //we should give a nickname also
-    
     }
 
     if(userName == ""){
@@ -34,7 +32,6 @@ export default function Page({ params }: { params: { id: string } }) {
     socket.emit("PUT_REQ_JOIN_ROOM", {room_id: params.id, user_id: userName});
 
     socket.on("PUT_RES_JOIN_ROOM", (data: any) => {
-
       if (data == "ERROR") {
         setError(true);
         return;
