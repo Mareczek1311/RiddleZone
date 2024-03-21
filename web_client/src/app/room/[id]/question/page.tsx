@@ -24,11 +24,12 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
         if (isClicked) {
             return;
         }
-        socket.emit('PUT_REQ_SEND_ANSWER', {room_id, answer});
+        socket.emit('PUT_REQ_SEND_ANSWER', {room_id: room_id, answer: answer});
         
         //we should get correct answer at the end of the round
         socket.on('PUT_RES_SEND_ANSWER', (data: any) => {
-            setCorrectAnswer(data.correct_answer);
+            setCorrectAnswer(data.correctAnswer);
+            console.log("correctAnswer: ", data.correctAnswer)
         })
 
         updateIsClicked(true)
@@ -61,9 +62,6 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
         updateIsClicked(false);
       })
 
-      socket.on("GET_RES_CORRECT_ANSWER", (data: any) => {
-        setCorrectAnswer(data.correct_answer);
-      })
     }, [socket])
 
 
@@ -86,12 +84,26 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
                     :
                     <div className=" question-page-answer-uncorrent button">
                         <motion.h1 className="button-text question-page-answer-uncorrent-text">
-                        {currQuestion[1]}
+                        {currQuestion[0]}
                         </motion.h1>
                     </div>
                 }
                 {
                     "b" === correct_answer ?
+                    <div className="question-page-answer-correct button">
+                        <motion.h1 className="button-text question-page-answer-correct-text">
+                        {currQuestion[1]}
+                        </motion.h1>
+                    </div>
+                    :
+                    <div className=" question-page-answer-uncorrent button">
+                        <motion.h1 className="button-text question-page-answer-uncorrent-text">
+                        {currQuestion[1]}
+                        </motion.h1>
+                    </div>
+                }
+                {
+                    "c" === correct_answer ?
                     <div className="question-page-answer-correct button">
                         <motion.h1 className="button-text question-page-answer-correct-text">
                         {currQuestion[2]}
@@ -100,21 +112,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
                     :
                     <div className=" question-page-answer-uncorrent button">
                         <motion.h1 className="button-text question-page-answer-uncorrent-text">
-                        {currQuestion[3]}
-                        </motion.h1>
-                    </div>
-                }
-                {
-                    "c" === correct_answer ?
-                    <div className="question-page-answer-correct button">
-                        <motion.h1 className="button-text question-page-answer-correct-text">
-                        {currQuestion[4]}
-                        </motion.h1>
-                    </div>
-                    :
-                    <div className=" question-page-answer-uncorrent button">
-                        <motion.h1 className="button-text question-page-answer-uncorrent-text">
-                        {currQuestion[3]}
+                        {currQuestion[2]}
                         </motion.h1>
                     </div>
                 }
@@ -122,13 +120,13 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
                     "d" === correct_answer ?
                     <div className="question-page-answer-correct button">
                         <motion.h1 className="button-text question-page-answer-correct-text">
-                            {currQuestion[4]}
+                            {currQuestion[3]}
                         </motion.h1>
                     </div>
                     :
                     <div className=" question-page-answer-uncorrent button">
                         <motion.h1 className="button-text question-page-answer-uncorrent-text">
-                        {currQuestion[4]}
+                        {currQuestion[3]}
                         </motion.h1>
                     </div>
                 }

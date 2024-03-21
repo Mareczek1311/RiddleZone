@@ -19,6 +19,7 @@ const GET_REQ_ROOM_INFO = require("./socketFunctions/GET_REQ_ROOM_INFO");
 const PUT_REQ_SET_STATE = require("./socketFunctions/PUT_REQ_SET_STATE");
 const GET_REQ_QUESTION = require("./socketFunctions/GET_REQ_QUESTION");
 const PUT_REQ_START_GAME = require("./socketFunctions/PUT_REQ_START_GAME");
+const PUT_REQ_SEND_ANSWER = require("./socketFunctions/PUT_REQ_SEND_ANSWER");
 
 function socketOnFunction(socket, io) {
     console.log("===!CONNECTION!===");
@@ -31,6 +32,7 @@ function socketOnFunction(socket, io) {
     GET_REQ_quizzies(socket, io);
     GET_REQ_QUESTION(socket, io);
     PUT_REQ_START_GAME(socket, io);
+    PUT_REQ_SEND_ANSWER(socket, io);
     //connect_to_room(socket, io);
 
     GET_REQ_ROOM_INFO(socket, io);
