@@ -4,13 +4,10 @@ import "@/app/globals.css";
 import { motion } from "framer-motion";
 import { UserSocket } from "@/app/context/socketContext";
 import { set } from "firebase/database";
+import { redirect } from "next/navigation";
+import { roomContext } from "@/app/context/roomContext";
 
-
-interface LoginPageProps {
-  room_id: string;
-}
-
-const LoginPage: React.FC<LoginPageProps> = ({ room_id }) =>{
+const LoginPage = () =>{
   const [ready, setReady] = useState(false);
 
   const {socket, connectToSocket} = UserSocket();
@@ -18,7 +15,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ room_id }) =>{
   const [readyCounter, setReadyCounter] = useState(0);
   const [started, setStarted] = useState(false);
   const [questionSetName, setQuestionSetName] = useState("");
+  const { room_id, SetRoomID } = roomContext();
   
+
+
   function handleReady() {
     setReady(!ready);
 
@@ -47,7 +47,16 @@ const LoginPage: React.FC<LoginPageProps> = ({ room_id }) =>{
 
 
     })
+
+    
   }, [socket]);
+
+  useEffect(() => {
+    if (started) {
+      redirect(`/room/${room_id}/question`);
+    }
+  
+  }, [started])
 
   return (
     <motion.div className="MainSectionLobby">
@@ -144,13 +153,16 @@ const LoginPage: React.FC<LoginPageProps> = ({ room_id }) =>{
               className="button"
               style={{ marginTop: "2vh" }}
               onClick={() => {
-                socket.emit("start_game", room_id);
-                setStarted(true);
+                socket.emit("PUT_REQ_START_GAME", room_id);
+                socket.on("PUT_RES_START_GAME", () => {
+                  setStarted(true);
+                })
               }}
             >
               <motion.h1 className="button-text">Start Game</motion.h1>
             </motion.button>
           ) : null
+          
           /*
           <motion.button
               className="button"
