@@ -5,13 +5,9 @@ import { motion } from "framer-motion";
 import { UserSocket } from "@/app/context/socketContext";
 import { set } from "firebase/database";
 import { redirect } from "next/navigation";
+import { roomContext } from "@/app/context/roomContext";
 
-
-interface LoginPageProps {
-  room_id: string;
-}
-
-const LoginPage: React.FC<LoginPageProps> = ({ room_id }) =>{
+const LoginPage = () =>{
   const [ready, setReady] = useState(false);
 
   const {socket, connectToSocket} = UserSocket();
@@ -19,6 +15,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ room_id }) =>{
   const [readyCounter, setReadyCounter] = useState(0);
   const [started, setStarted] = useState(false);
   const [questionSetName, setQuestionSetName] = useState("");
+  const { room_id, SetRoomID } = roomContext();
   
 
 

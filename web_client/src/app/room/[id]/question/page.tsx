@@ -4,12 +4,15 @@ import { UserSocket } from "@/app/context/socketContext";
 import "./QuestionPage.css";
 import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
+import { roomContext } from "@/app/context/roomContext";
+import { set } from "firebase/database";
 
 interface QuestionPageProps {
-    room_id: string;
+    room_id_: string;
 }
 
-const QuestionPage: React.FC<QuestionPageProps> = ({room_id}) => {
+const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
+  const { room_id, SetRoomID } = roomContext();
     const {socket, connectToSocket} = UserSocket();
     const [isClicked, updateIsClicked] = useState(false);
     const [correct_answer, setCorrectAnswer] = useState("");
@@ -39,7 +42,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id}) => {
     }
 
     useEffect(() => {
-        
+
       socket.emit("GET_REQ_ROOM_INFO", room_id);
       socket.on("GET_RES_ROOM_INFO", (data: any) => {
         // we can optimise that

@@ -6,6 +6,7 @@ import "./globals.css";
 import { AuthContextProvider } from "./context/authContext";
 import { SocketContextProvider } from "./context/socketContext";
 import { UserNameContextProvider } from "./context/userNameContext";
+import { RoomContextProvider } from "./context/roomContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,13 +24,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <UserNameContextProvider>
-      <AuthContextProvider >
-        <SocketContextProvider>
-          <body className={inter.className}>{children}</body>
-        </SocketContextProvider>
-      </AuthContextProvider>
-      </UserNameContextProvider>
+      <RoomContextProvider>
+        <UserNameContextProvider>
+          <AuthContextProvider >
+            <SocketContextProvider>
+              <body className={inter.className}>{children}</body>
+            </SocketContextProvider>
+          </AuthContextProvider>
+        </UserNameContextProvider>
+      </RoomContextProvider>
     </html>
   );
 }
