@@ -30,6 +30,10 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
         socket.on('PUT_RES_SEND_ANSWER', (data: any) => {
             setCorrectAnswer(data.correctAnswer);
             console.log("correctAnswer: ", data.correctAnswer)
+
+            //[TESTING] here we sould check if all players gave answers
+            socket.emit("PUT_REQ_CHECK_IF_ALL_ANSWERED", room_id)
+            //[TESTING]
         })
 
         updateIsClicked(true)
@@ -61,6 +65,14 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
         setCorrectAnswer("");
         updateIsClicked(false);
       })
+
+      socket.on("PUT_RES_CHECK_IF_ALL_ANSWERED", (status : boolean) => {
+      if(status == true){
+        //restart values
+        
+      }
+
+    })
 
     }, [socket])
 
