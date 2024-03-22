@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { roomContext } from "@/app/context/roomContext";
 import { set } from "firebase/database";
+import { redirect } from "next/navigation";
 
 interface QuestionPageProps {
     room_id_: string;
@@ -19,6 +20,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
     const [currQuestion, setCurrQuestion] = useState(["", "", "", "", ""]);
     const [isAdmin, setIsAdmin] = useState(false);
     const [questionName, setQuestionName] = useState("")
+    const [isEnded, setIsEnded] = useState(false)
 
     function sendAnswer(answer: string) {
         if (isClicked) {
@@ -60,6 +62,11 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
 
     useEffect(() =>{
       socket.on("GET_RES_QUESTION", (data: any) => {
+        console.log("data: ", data)
+        if(data.isEnded == true){
+          setIsEnded(true)
+        }
+
         setCurrQuestion(data.questions);
         setQuestionName(data.name)
         setCorrectAnswer("");
@@ -68,13 +75,20 @@ const QuestionPage: React.FC<QuestionPageProps> = ({room_id_}) => {
 
       socket.on("PUT_RES_CHECK_IF_ALL_ANSWERED", (status : boolean) => {
       if(status == true){
-        //restart values
-        
+        setCorrectAnswer("");
+        updateIsClicked(false);
+        setCurrQuestion(["", "", "", "", ""]);
+        socket.emit("GET_REQ_QUESTION", room_id);
       }
-
     })
-
     }, [socket])
+
+
+    useEffect(() => {
+      if(isEnded == true){
+        redirect("/room/" + room_id + "/end")
+      }
+    }, [isEnded])
 
 
 
