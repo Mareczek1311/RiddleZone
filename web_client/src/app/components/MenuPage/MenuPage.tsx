@@ -1,27 +1,15 @@
 "use client";
 
-import { io } from "socket.io-client";
 import "./MenuPage.css";
 import { motion } from "framer-motion";
 
 import React, { useEffect, useState } from "react";
-import { set } from "firebase/database";
 
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { userNameContext } from "@/app/context/userNameContext";
 
-interface MenuPageProps {
-  updateRoomID: (newValue: string) => void;
-  socket: any;
-  ConnectToRoom: (room_id: string, nickname: string) => void;
-}
-
-const MenuPage: React.FC<MenuPageProps> = ({
-  updateRoomID,
-  socket,
-  ConnectToRoom,
-}) => {
+const MenuPage = () => {
   //inputValue - roomid
   //inputValue2 - nickname
   const [inputValue, setInputValue] = useState("");
