@@ -25,7 +25,14 @@ function GET_REQ_QUESTION(socket, io) {
       const room = doc.data();
 
       //error here room.set is not a function
-        
+      const docref = db
+      .collection("rooms")
+      .doc(data.room_id)
+
+      await docref.update({
+          isEnded: true,
+      });
+
 
       io.to(room_id).emit("GET_RES_QUESTION", {
         questions: [],
