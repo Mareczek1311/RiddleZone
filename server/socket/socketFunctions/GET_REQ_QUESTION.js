@@ -27,7 +27,7 @@ function GET_REQ_QUESTION(socket, io) {
       //error here room.set is not a function
       const docref = db
       .collection("rooms")
-      .doc(data.room_id)
+      .doc(room_id)
 
       await docref.update({
           isEnded: true,

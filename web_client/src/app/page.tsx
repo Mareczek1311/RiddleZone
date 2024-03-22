@@ -16,7 +16,6 @@ import MenuPage from "./components/MenuPage/MenuPage";
 import QuestionPick from "./components/QuestionPick/QuestionPick";
 import QuestionPage from "./components/QuestionPage/QuestionPage";
 import MessagePage from "./components/MessagePage/MessagePage";
-import EndPage from "./components/EndPage/EndPage";
 import { redirect } from "next/navigation";
 import { UserSocket } from "./context/socketContext";
 import { set } from "firebase/database";
