@@ -44,8 +44,10 @@ const LoginPage = () =>{
         }
       });
       setReadyCounter(readyCount);
+    })
 
-
+    socket.on("PUT_RES_START_GAME", () => {
+      setStarted(true);
     })
 
     
@@ -154,9 +156,6 @@ const LoginPage = () =>{
               style={{ marginTop: "2vh" }}
               onClick={() => {
                 socket.emit("PUT_REQ_START_GAME", room_id);
-                socket.on("PUT_RES_START_GAME", () => {
-                  setStarted(true);
-                })
               }}
             >
               <motion.h1 className="button-text">Start Game</motion.h1>

@@ -21,6 +21,16 @@ function PUT_REQ_CHECK_IF_ALL_ANSWERED(socket, io) {
             currentQuestion: currentQuestion + 1
         });
 
+        //restart answered status
+        const doc = db.collection("rooms").doc(room_id).collection("players");
+        const snapshot = await doc.get();
+        snapshot.forEach((doc) => {
+            doc.ref.update({
+                answered: false
+            });
+        });
+
+
       io.to(room_id).emit("PUT_RES_CHECK_IF_ALL_ANSWERED", allAnswered);
     }
 
