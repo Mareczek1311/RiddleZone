@@ -31,7 +31,10 @@ function PUT_REQ_CHECK_IF_ALL_ANSWERED(socket, io) {
         });
 
 
-      io.to(room_id).emit("PUT_RES_CHECK_IF_ALL_ANSWERED", allAnswered);
+        //wait for 3 seconds
+        setTimeout(() => {
+            io.to(room_id).emit("PUT_RES_CHECK_IF_ALL_ANSWERED", allAnswered);
+        }, 3000);
     }
 
   });

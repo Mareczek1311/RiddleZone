@@ -1,0 +1,21 @@
+.loader {
+    width: 48px;
+    height: 48px;
+    background: #161616;
+    display: inline-block;
+    border-radius: 50%;
+    box-sizing: border-box;
+    animation: animloader 1s ease-in infinite;
+    margin-top: 100px;
+  }
+  
+  @keyframes animloader {
+    0% {
+      transform: scale(0);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 0;
+    }
+  } 
