@@ -117,7 +117,7 @@ const LoginPage = () =>{
           <motion.h2 className="player-value">{playerSet[key].location}</motion.h2>
         </motion.div> */}
         <motion.div className="player-value-wrapper">
-          <motion.h2 className="player-value">{playerSet[key].isReady ? "UNREADY" : "READY"}</motion.h2>
+          <motion.h2 className="player-value">{!playerSet[key].isReady ? "UNREADY" : "READY"}</motion.h2>
         </motion.div>
       </motion.div>
     );
@@ -150,7 +150,7 @@ const LoginPage = () =>{
           )}
           
           {
-            playerSet[socket.id] && readyCounter == Object.keys(playerSet).length ? (
+             playerSet[socket.id].isAdmin && readyCounter == Object.keys(playerSet).length ? (
             <motion.button
               className="button"
               style={{ marginTop: "2vh" }}
