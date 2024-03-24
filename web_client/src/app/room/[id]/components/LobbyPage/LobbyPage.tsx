@@ -5,35 +5,32 @@ import { motion } from "framer-motion";
 import { UserSocket } from "@/app/context/socketContext";
 import { set } from "firebase/database";
 import { redirect } from "next/navigation";
+import { Loading } from "@/app/components/Loading/Loading";
 import { roomContext } from "@/app/context/roomContext";
 
-const LoginPage = () =>{
+const LoginPage = () => {
   const [ready, setReady] = useState(false);
 
-  const {socket, connectToSocket} = UserSocket();
+  const { socket, connectToSocket } = UserSocket();
   const [playerSet, setPlayerSet] = useState({});
   const [readyCounter, setReadyCounter] = useState(0);
   const [started, setStarted] = useState(false);
   const [questionSetName, setQuestionSetName] = useState("");
   const { room_id, SetRoomID } = roomContext();
-  
-
 
   function handleReady() {
     setReady(!ready);
 
     socket.emit("PUT_REQ_SET_STATE", { room_id: room_id, ready: !ready });
     socket.emit("GET_REQ_ROOM_INFO", room_id);
-
   }
 
   useEffect(() => {
     socket.emit("GET_REQ_ROOM_INFO", room_id);
-  }, []);
+    socket.on("GET_RES_ROOM_INFO", (data: any) => {
+      console.log("PlayerSet: ", playerSet);
 
-  useEffect(() => {
-    socket.on("GET_RES_ROOM_INFO", (data : any) => {
-      console.log("ROOM INFO: ", data)
+      console.log("ROOM INFO: ", data);
       setPlayerSet(data.users);
       setQuestionSetName(data.questionSetName);
 
@@ -44,21 +41,36 @@ const LoginPage = () =>{
         }
       });
       setReadyCounter(readyCount);
-    })
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.on("GET_RES_ROOM_INFO", (data: any) => {
+      console.log("PlayerSet: ", playerSet);
+
+      console.log("ROOM INFO: ", data);
+      setPlayerSet(data.users);
+      setQuestionSetName(data.questionSetName);
+
+      let readyCount = 0;
+      Object.keys(data.users).map((key, index) => {
+        if (data.users[key].isReady) {
+          readyCount++;
+        }
+      });
+      setReadyCounter(readyCount);
+    });
 
     socket.on("PUT_RES_START_GAME", () => {
       setStarted(true);
-    })
-
-    
+    });
   }, [socket]);
 
   useEffect(() => {
     if (started) {
       redirect(`/room/${room_id}/question`);
     }
-  
-  }, [started])
+  }, [started]);
 
   return (
     <motion.div className="MainSectionLobby">
@@ -93,21 +105,22 @@ const LoginPage = () =>{
               </motion.div> */}
             </motion.div>
 
-{
-
-  playerSet ?
-
-  Object.keys(playerSet).map((key, index) => {
-    return (
-      <motion.div className="player-wrapper" key={index}>
-        <motion.h5 className="example-text">{index + 1}</motion.h5>
-        {/* <motion.div className="player-value-wrapper">
+            {Object.keys(playerSet).length != 0
+              ? Object.keys(playerSet).map((key, index) => {
+                  return (
+                    <motion.div className="player-wrapper" key={index}>
+                      <motion.h5 className="example-text">
+                        {index + 1}
+                      </motion.h5>
+                      {/* <motion.div className="player-value-wrapper">
           <motion.h2 className="player-value">{playerSet[key].img}</motion.h2>
         </motion.div> */}
-        <motion.div className="player-value-wrapper">
-          <motion.h2 className="player-value">{playerSet[key].realID}</motion.h2>
-        </motion.div>
-        {/* <motion.div className="player-value-wrapper">
+                      <motion.div className="player-value-wrapper">
+                        <motion.h2 className="player-value">
+                          {playerSet[key].realID}
+                        </motion.h2>
+                      </motion.div>
+                      {/* <motion.div className="player-value-wrapper">
           <motion.h2 className="player-value">{playerSet[key].level}</motion.h2>
         </motion.div>
         <motion.div className="player-value-wrapper">
@@ -116,53 +129,55 @@ const LoginPage = () =>{
         <motion.div className="player-value-wrapper">
           <motion.h2 className="player-value">{playerSet[key].location}</motion.h2>
         </motion.div> */}
-        <motion.div className="player-value-wrapper">
-          <motion.h2 className="player-value">{playerSet[key].isReady ? "UNREADY" : "READY"}</motion.h2>
-        </motion.div>
-      </motion.div>
-    );
-  })
-
-  : null
-
-}
+                      <motion.div className="player-value-wrapper">
+                        <motion.h2 className="player-value">
+                          {!playerSet[key].isReady ? "UNREADY" : "READY"}
+                        </motion.h2>
+                      </motion.div>
+                    </motion.div>
+                  );
+                })
+              : null}
           </motion.div>
         </motion.div>
         <motion.div className="lobby_buttons-wrapper">
-          {!ready ? (
-            <motion.button
-              className="button"
-              onClick={() => {
-                handleReady();
-              }}
-            >
-              <motion.h1 className="button-text">Ready</motion.h1>
-            </motion.button>
-          ) : (
-            <motion.button
-              className="button"
-              onClick={() => {
-                handleReady();
-              }}
-            >
-              <motion.h1 className="button-text">Not Ready</motion.h1>
-            </motion.button>
-          )}
-          
-          {
-            playerSet[socket.id] && readyCounter == Object.keys(playerSet).length ? (
-            <motion.button
-              className="button"
-              style={{ marginTop: "2vh" }}
-              onClick={() => {
-                socket.emit("PUT_REQ_START_GAME", room_id);
-              }}
-            >
-              <motion.h1 className="button-text">Start Game</motion.h1>
-            </motion.button>
-          ) : null
-          
-          /*
+          {Object.keys(playerSet).length != 0 ? (
+            <div>
+              {!ready ? (
+                <motion.button
+                  className="button"
+                  onClick={() => {
+                    handleReady();
+                  }}
+                >
+                  <motion.h1 className="button-text">Ready</motion.h1>
+                </motion.button>
+              ) : (
+                <motion.button
+                  className="button"
+                  onClick={() => {
+                    handleReady();
+                  }}
+                >
+                  <motion.h1 className="button-text">Not Ready</motion.h1>
+                </motion.button>
+              )}
+
+              {
+                playerSet[socket.id].isAdmin &&
+                readyCounter == Object.keys(playerSet).length ? (
+                  <motion.button
+                    className="button"
+                    style={{ marginTop: "2vh" }}
+                    onClick={() => {
+                      socket.emit("PUT_REQ_START_GAME", room_id);
+                    }}
+                  >
+                    <motion.h1 className="button-text">Start Game</motion.h1>
+                  </motion.button>
+                ) : null
+
+                /*
           <motion.button
               className="button"
               style={{ marginTop: "2vh" }}
@@ -173,8 +188,11 @@ const LoginPage = () =>{
             >
               <motion.h1 className="button-text">FORCE Start Game</motion.h1>
             </motion.button>*/
-          
-          }
+              }
+            </div>
+          ) : (
+            <Loading />
+          )}
         </motion.div>
       </motion.div>
     </motion.div>
