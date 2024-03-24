@@ -97,130 +97,134 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ room_id_ }) => {
     <div>
       <motion.div className="MainSectionLobby">
         <motion.div className="ManageSectionLobby">
-          {isLoading ? <Loading /> : 
-          <>
-          <motion.h1>{questionName}</motion.h1>
-          {!(correct_answer == "") ? (
-            <div className="question-page-container">
-              {"a" === correct_answer ? (
-                <div className="question-page-answer-correct button">
-                  <motion.h1 className="button-text question-page-answer-correct-text">
-                    {currQuestion[0]}
-                  </motion.h1>
-                </div>
-              ) : (
-                <div className=" question-page-answer-uncorrent button">
-                  <motion.h1 className="button-text question-page-answer-uncorrent-text">
-                    {currQuestion[0]}
-                  </motion.h1>
-                </div>
-              )}
-              {"b" === correct_answer ? (
-                <div className="question-page-answer-correct button">
-                  <motion.h1 className="button-text question-page-answer-correct-text">
-                    {currQuestion[1]}
-                  </motion.h1>
-                </div>
-              ) : (
-                <div className=" question-page-answer-uncorrent button">
-                  <motion.h1 className="button-text question-page-answer-uncorrent-text">
-                    {currQuestion[1]}
-                  </motion.h1>
-                </div>
-              )}
-              {"c" === correct_answer ? (
-                <div className="question-page-answer-correct button">
-                  <motion.h1 className="button-text question-page-answer-correct-text">
-                    {currQuestion[2]}
-                  </motion.h1>
-                </div>
-              ) : (
-                <div className=" question-page-answer-uncorrent button">
-                  <motion.h1 className="button-text question-page-answer-uncorrent-text">
-                    {currQuestion[2]}
-                  </motion.h1>
-                </div>
-              )}
-              {"d" === correct_answer ? (
-                <div className="question-page-answer-correct button">
-                  <motion.h1 className="button-text question-page-answer-correct-text">
-                    {currQuestion[3]}
-                  </motion.h1>
-                </div>
-              ) : (
-                <div className=" question-page-answer-uncorrent button">
-                  <motion.h1 className="button-text question-page-answer-uncorrent-text">
-                    {currQuestion[3]}
-                  </motion.h1>
-                </div>
-              )}
-            </div>
+          {isLoading ? (
+            <Loading />
           ) : (
-            <motion.div className="question-page-container">
-              <motion.div className="question-page-answer">
-                <motion.button
-                  onClick={() => {
-                    sendAnswer("a");
-                  }}
-                  className="button"
-                >
-                  <motion.h1 className="button-text thinner">
-                    {currQuestion[0]}
-                  </motion.h1>
-                </motion.button>
-              </motion.div>
-              <motion.div className="question-page-answer">
-                <motion.button
-                  onClick={() => {
-                    sendAnswer("b");
-                  }}
-                  className="button"
-                >
-                  <motion.h1 className="button-text">
-                    {currQuestion[1]}
-                  </motion.h1>
-                </motion.button>
-              </motion.div>
-              <motion.div className="question-page-answer">
-                <motion.button
-                  onClick={() => {
-                    sendAnswer("c");
-                  }}
-                  className="button"
-                >
-                  <motion.h1 className="button-text">
-                    {currQuestion[2]}
-                  </motion.h1>
-                </motion.button>
-              </motion.div>
-              <motion.div className="question-page-answer">
-                <motion.button
-                  onClick={() => {
-                    sendAnswer("d");
-                  }}
-                  className="button"
-                >
-                  <motion.h1 className="button-text">
-                    {currQuestion[3]}
-                  </motion.h1>
-                </motion.button>
-              </motion.div>
-              {isAdmin ? (
-                <motion.div className="question-page-answer">
-                  <motion.button
-                    onClick={() => {
-                      SkipQuestion();
-                    }}
-                    className="button"
-                  >
-                    <motion.h1 className="button-text">SKIP QUESTION</motion.h1>
-                  </motion.button>
+            <>
+              <motion.h1>{questionName}</motion.h1>
+              {!(correct_answer == "") ? (
+                <div className="question-page-container">
+                  {"a" === correct_answer ? (
+                    <div className="question-page-answer-correct button">
+                      <motion.h1 className="button-text question-page-answer-correct-text">
+                        {currQuestion[0]}
+                      </motion.h1>
+                    </div>
+                  ) : (
+                    <div className=" question-page-answer-uncorrent button">
+                      <motion.h1 className="button-text question-page-answer-uncorrent-text">
+                        {currQuestion[0]}
+                      </motion.h1>
+                    </div>
+                  )}
+                  {"b" === correct_answer ? (
+                    <div className="question-page-answer-correct button">
+                      <motion.h1 className="button-text question-page-answer-correct-text">
+                        {currQuestion[1]}
+                      </motion.h1>
+                    </div>
+                  ) : (
+                    <div className=" question-page-answer-uncorrent button">
+                      <motion.h1 className="button-text question-page-answer-uncorrent-text">
+                        {currQuestion[1]}
+                      </motion.h1>
+                    </div>
+                  )}
+                  {"c" === correct_answer ? (
+                    <div className="question-page-answer-correct button">
+                      <motion.h1 className="button-text question-page-answer-correct-text">
+                        {currQuestion[2]}
+                      </motion.h1>
+                    </div>
+                  ) : (
+                    <div className=" question-page-answer-uncorrent button">
+                      <motion.h1 className="button-text question-page-answer-uncorrent-text">
+                        {currQuestion[2]}
+                      </motion.h1>
+                    </div>
+                  )}
+                  {"d" === correct_answer ? (
+                    <div className="question-page-answer-correct button">
+                      <motion.h1 className="button-text question-page-answer-correct-text">
+                        {currQuestion[3]}
+                      </motion.h1>
+                    </div>
+                  ) : (
+                    <div className=" question-page-answer-uncorrent button">
+                      <motion.h1 className="button-text question-page-answer-uncorrent-text">
+                        {currQuestion[3]}
+                      </motion.h1>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <motion.div className="question-page-container">
+                  <motion.div className="question-page-answer">
+                    <motion.button
+                      onClick={() => {
+                        sendAnswer("a");
+                      }}
+                      className="button"
+                    >
+                      <motion.h1 className="button-text thinner">
+                        {currQuestion[0]}
+                      </motion.h1>
+                    </motion.button>
+                  </motion.div>
+                  <motion.div className="question-page-answer">
+                    <motion.button
+                      onClick={() => {
+                        sendAnswer("b");
+                      }}
+                      className="button"
+                    >
+                      <motion.h1 className="button-text">
+                        {currQuestion[1]}
+                      </motion.h1>
+                    </motion.button>
+                  </motion.div>
+                  <motion.div className="question-page-answer">
+                    <motion.button
+                      onClick={() => {
+                        sendAnswer("c");
+                      }}
+                      className="button"
+                    >
+                      <motion.h1 className="button-text">
+                        {currQuestion[2]}
+                      </motion.h1>
+                    </motion.button>
+                  </motion.div>
+                  <motion.div className="question-page-answer">
+                    <motion.button
+                      onClick={() => {
+                        sendAnswer("d");
+                      }}
+                      className="button"
+                    >
+                      <motion.h1 className="button-text">
+                        {currQuestion[3]}
+                      </motion.h1>
+                    </motion.button>
+                  </motion.div>
+                  {isAdmin ? (
+                    <motion.div className="question-page-answer">
+                      <motion.button
+                        onClick={() => {
+                          SkipQuestion();
+                        }}
+                        className="button"
+                      >
+                        <motion.h1 className="button-text">
+                          SKIP QUESTION
+                        </motion.h1>
+                      </motion.button>
+                    </motion.div>
+                  ) : null}
                 </motion.div>
-              ) : null}
-            </motion.div>
+              )}
+            </>
           )}
-          </>
-          }
         </motion.div>
       </motion.div>
     </div>
