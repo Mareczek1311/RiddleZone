@@ -30,6 +30,11 @@ const LoginPage = () => {
     socket.on("GET_RES_ROOM_INFO", (data: any) => {
       console.log("PlayerSet: ", playerSet);
 
+      if(Object.keys(data.users).length == 0){
+        socket.emit("GET_REQ_ROOM_INFO", room_id);
+        return
+      }
+
       console.log("ROOM INFO: ", data);
       setPlayerSet(data.users);
       setQuestionSetName(data.questionSetName);
@@ -143,7 +148,10 @@ const LoginPage = () => {
         <motion.div className="lobby_buttons-wrapper">
           {Object.keys(playerSet).length != 0 ? (
             <div>
-              {!ready ? (
+              {playerSet[socket.id].isAdmin == false ?
+              <div>
+                              
+                {!ready ? (
                 <motion.button
                   className="button"
                   onClick={() => {
@@ -162,6 +170,9 @@ const LoginPage = () => {
                   <motion.h1 className="button-text">Not Ready</motion.h1>
                 </motion.button>
               )}
+              </div>
+              : null
+            }
 
               {
                 playerSet[socket.id].isAdmin &&

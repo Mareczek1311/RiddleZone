@@ -49,7 +49,7 @@ function PUT_REQ_JOIN_ROOM(socket, io) {
       docRef
       .set({
         isAdmin: true,
-        isReady: false,
+        isReady: true,
         realID: real_player_id,
         score: 0,
         answered: false,
