@@ -10,7 +10,7 @@ function PUT_REQ_CHECK_IF_ALL_ANSWERED(socket, io) {
     let allAnswered = true;
     snapshot.forEach((doc) => {
       const data = doc.data();
-      if (!data.answered) {
+      if (!data.isAdmin && !data.answered) {
         allAnswered = false;
       }
     });
@@ -25,6 +25,7 @@ function PUT_REQ_CHECK_IF_ALL_ANSWERED(socket, io) {
         const doc = db.collection("rooms").doc(room_id).collection("players");
         const snapshot = await doc.get();
         snapshot.forEach((doc) => {
+            
             doc.ref.update({
                 answered: false
             });

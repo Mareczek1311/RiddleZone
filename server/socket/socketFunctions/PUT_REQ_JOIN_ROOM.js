@@ -52,7 +52,7 @@ function PUT_REQ_JOIN_ROOM(socket, io) {
         isReady: true,
         realID: real_player_id,
         score: 0,
-        answered: false,
+        answered: true,
       })
     }
     else{
