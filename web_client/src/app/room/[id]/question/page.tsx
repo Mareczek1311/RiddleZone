@@ -88,6 +88,17 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ room_id_ }) => {
   }, [socket]);
 
   useEffect(() => {
+    if(isAdmin && questionName != ""){
+      socket.emit("PUT_REQ_SEND_ANSWER", { room_id: room_id, answer: "z" });
+
+      socket.on("PUT_RES_SEND_ANSWER", (data: any) => {
+        setCorrectAnswer(data.correctAnswer);
+        console.log("correctAnswer: ", data.correctAnswer);
+      });
+    }
+  }, [questionName])
+
+  useEffect(() => {
     if (isEnded == true) {
       redirect("/room/" + room_id + "/end");
     }

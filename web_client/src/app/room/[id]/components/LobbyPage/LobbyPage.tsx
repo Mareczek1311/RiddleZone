@@ -175,7 +175,7 @@ const LoginPage = () => {
             }
 
               {
-                playerSet[socket.id].isAdmin &&
+                playerSet && playerSet[socket.id].isAdmin &&
                 readyCounter == Object.keys(playerSet).length && Object.keys(playerSet).length != 1 ? (
                   <motion.button
                     className="button"

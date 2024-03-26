@@ -1,0 +1,55 @@
+/Users/mareczek131/code/projects/RiddleZone/server/socket/socketFunctions/GET_REQ_QUESTION.js:65
+      const iscurrentQuestion = doc2.data().currentQuestion; 
+                                           ^
+
+TypeError: Cannot read properties of undefined (reading 'currentQuestion')
+    at Timeout._onTimeout (/Users/mareczek131/code/projects/RiddleZone/server/socket/socketFunctions/GET_REQ_QUESTION.js:65:44)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+Node.js v21.6.1
+
+
+
+
+
+----------------
+
+
+
+node:internal/process/promises:289
+            triggerUncaughtException(err, true /* fromPromise */);
+            ^
+
+Error: 5 NOT_FOUND: No document to update: projects/bjweb-68905/databases/(default)/documents/rooms/452491/players/4CmPgS_VDvWBvQ2TAAAP
+    at callErrorFromStatus (/Users/mareczek131/code/projects/RiddleZone/server/node_modules/@grpc/grpc-js/build/src/call.js:31:19)
+    at Object.onReceiveStatus (/Users/mareczek131/code/projects/RiddleZone/server/node_modules/@grpc/grpc-js/build/src/client.js:192:76)
+    at Object.onReceiveStatus (/Users/mareczek131/code/projects/RiddleZone/server/node_modules/@grpc/grpc-js/build/src/client-interceptors.js:360:141)
+    at Object.onReceiveStatus (/Users/mareczek131/code/projects/RiddleZone/server/node_modules/@grpc/grpc-js/build/src/client-interceptors.js:323:181)
+    at /Users/mareczek131/code/projects/RiddleZone/server/node_modules/@grpc/grpc-js/build/src/resolving-call.js:99:78
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+for call at
+    at ServiceClientImpl.makeUnaryRequest (/Users/mareczek131/code/projects/RiddleZone/server/node_modules/@grpc/grpc-js/build/src/client.js:160:32)
+    at ServiceClientImpl.<anonymous> (/Users/mareczek131/code/projects/RiddleZone/server/node_modules/@grpc/grpc-js/build/src/make-client.js:105:19)
+    at /Users/mareczek131/code/projects/RiddleZone/server/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:231:29
+    at /Users/mareczek131/code/projects/RiddleZone/server/node_modules/google-gax/build/src/normalCalls/timeout.js:44:16
+    at repeat (/Users/mareczek131/code/projects/RiddleZone/server/node_modules/google-gax/build/src/normalCalls/retries.js:80:25)
+    at /Users/mareczek131/code/projects/RiddleZone/server/node_modules/google-gax/build/src/normalCalls/retries.js:119:13
+    at OngoingCallPromise.call (/Users/mareczek131/code/projects/RiddleZone/server/node_modules/google-gax/build/src/call.js:67:27)
+    at NormalApiCaller.call (/Users/mareczek131/code/projects/RiddleZone/server/node_modules/google-gax/build/src/normalCalls/normalApiCaller.js:34:19)
+    at /Users/mareczek131/code/projects/RiddleZone/server/node_modules/google-gax/build/src/createApiCall.js:108:30
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+Caused by: Error
+    at WriteBatch.commit (/Users/mareczek131/code/projects/RiddleZone/server/node_modules/@google-cloud/firestore/build/src/write-batch.js:432:23)
+    at DocumentReference.update (/Users/mareczek131/code/projects/RiddleZone/server/node_modules/@google-cloud/firestore/build/src/reference.js:438:14)
+    at Socket.<anonymous> (/Users/mareczek131/code/projects/RiddleZone/server/socket/socketFunctions/disconnect.js:95:22)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  code: 5,
+  details: 'No document to update: projects/bjweb-68905/databases/(default)/documents/rooms/452491/players/4CmPgS_VDvWBvQ2TAAAP',
+  metadata: Metadata {
+    internalRepr: Map(1) { 'x-debug-tracking-id' => [ '6544643153344248855;o=1' ] },
+    options: {}
+  },
+  note: 'Exception occurred in retry method that was not classified as transient'
+}
+
+Node.js v21.6.1
