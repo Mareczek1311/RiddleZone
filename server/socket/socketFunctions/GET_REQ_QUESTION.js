@@ -22,7 +22,6 @@ const fun = async (socket, room_id, io) => {
 
   //error here room.set is not a function
   const docref = db.collection("rooms").doc(room_id);
-  const currentQuestion2 = doc.data().currentQuestion;
 
   if (!docRef.exists) {
     await docref.update({
@@ -53,49 +52,6 @@ const fun = async (socket, room_id, io) => {
 
   socket.emit("GET_RES_QUESTION", data);
 
-  //here we check if currentQuestion is still the same after 10 seconds
-  //if it is then we emit PUT_RES_CHECK_IF_ALL_ANSWERED
-  //else we do nothing because the currentQuestion has been updated
-
-  const isTimeOutSet = await doc.data().isTimeOutSet;
-  console.log("isTimeOutSet: ", isTimeOutSet)
-  if (isTimeOutSet) {
-    return;
-  }
-
-  setTimeout(async () => {
-    const doc2 = await db.collection("rooms").doc(room_id).get();
-    const iscurrentQuestion = doc2.data().currentQuestion;
-    if (iscurrentQuestion !== currentQuestion2) {
-      return;
-    }
-
-    const currentQuestion = (
-      await db.collection("rooms").doc(room_id).get()
-    ).data().currentQuestion;
-    await db
-      .collection("rooms")
-      .doc(room_id)
-      .update({
-        currentQuestion: currentQuestion + 1,
-      });
-
-    //restart answered status
-    const doc = db.collection("rooms").doc(room_id).collection("players");
-    const snapshot = await doc.get();
-    snapshot.forEach((doc) => {
-      doc.ref.update({
-        answered: false,
-      });
-    });
-
-    await doc2.ref.update({
-      isTimeOutSet: false,
-    });
-
-    console.log("SKIPPING QUESTION");
-    io.to(room_id).emit("PUT_RES_CHECK_IF_ALL_ANSWERED", true);
-  }, 10000);
 };
 
 function GET_REQ_QUESTION(socket, io) {

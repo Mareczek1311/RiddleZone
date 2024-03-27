@@ -8,12 +8,10 @@ function GET_REQ_ROOM_INFO(socket, io) {
 
         await docRef.then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
-                console.log("doc", doc.id, "=>", doc.data())
                 users[doc.id] = doc.data();
             });
         })
 
-        console.log("users: ", users);
         const docRef2 = await db.collection("rooms").doc(room_id).get()
         const docRefQuestions = await db.collection("questions").doc(docRef2.data().questionSetId).get()
 

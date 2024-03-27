@@ -58,15 +58,13 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ room_id_ }) => {
     socket.on("GET_RES_ROOM_INFO", (data: any) => {
       // we can optimise that
       setIsAdmin(data.users[socket.id].isAdmin);
-
-      console.log("GET_REQ_QUESTION", data);
-      socket.emit("GET_REQ_QUESTION", room_id);
-
     });
+
+    console.log("GET_REQ_QUESTION+++++++")
+    socket.emit("GET_REQ_QUESTION", room_id);
 
     return () => {
       socket.off("GET_RES_ROOM_INFO");
-      socket.off("GET_REQ_QUESTION")
     }
 
   }, []);
@@ -74,55 +72,54 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ room_id_ }) => {
 
 
   useEffect(() => {
-    socket.on("GET_RES_QUESTION", (data: any) => {
+    const handleGetResQuestion = (data: any) => {
       console.log("data: ", data);
-      if (data.isEnded == true) {
+      if (data.isEnded === true) {
         setIsEnded(true);
       }
-
+  
       setCurrQuestion(data.questions);
       setQuestionName(data.name);
       setCorrectAnswer("");
       updateIsClicked(false);
       setIsLoading(false);
-    });
-
-    return () => socket.off("GET_RES_QUESTION");
-    
-  }, [socket]);
-
-  const myEventHandler = useCallback((status: boolean) => {
-    console.log(status); // Poprawnie loguje wartość `status`
-    if (status) { // Porównanie `status == true` jest zbędne, można użyć po prostu `status`
-      setIsLoading(true);
-      setCorrectAnswer(""); // Zakładam, że resetujesz odpowiedź na pustą wartość
-      updateIsClicked(false); // Zakładam, że zmieniasz stan na `false`
-      setCurrQuestion(["", "", "", "", ""]); // Resetujesz aktualne pytanie na puste wartości
+    };
   
-      console.log("GET_REQ_QUESTION")
-      socket.emit("GET_REQ_QUESTION", room_id); // Wysyłasz zdarzenie socketowe, zakładam, że `room_id` jest zdefiniowane
-    } 
-
-
+    // Ustawienie nasłuchu na zdarzenie 'GET_RES_QUESTION'
+    socket.on("GET_RES_QUESTION", handleGetResQuestion);
+  
+    // Czyszczenie nasłuchu na zdarzenie przy odmontowaniu komponentu
     return () => {
-      socket.off("PUT_RES_CHECK_IF_ALL_ANSWERED", myEventHandler)
-      socket.off("GET_RES_QUESTION")
-      socket.off("GET_RES_ROOM_INFO")
-      console.log("GET_REQ_QUESTION")
-      socket.off("GET_REQ_QUESTION")
-  };
+      socket.off("GET_RES_QUESTION", handleGetResQuestion);
+    };
+  }, [socket]); // Reagowanie na zmiany instancji `socket`
 
-  }, [setIsLoading, setCorrectAnswer, updateIsClicked, setCurrQuestion, socket, room_id]); // Dodaj wszystkie zależności tutaj
+
   
-
   useEffect(() => {
-    socket.on("PUT_RES_CHECK_IF_ALL_ANSWERED", myEventHandler);
-
-    return () => socket.off("PUT_RES_CHECK_IF_ALL_ANSWERED", myEventHandler);
-
-  }
-
-  , [socket]);
+    // Definiowanie funkcji obsługującej zdarzenie wewnątrz useEffect
+    const handlePutResCheckIfAllAnswered = (status: boolean) => {
+      console.log(status); // Logowanie otrzymanego statusu
+      if (status) { // Jeśli status jest prawdziwy, wykonaj pewne akcje
+        setIsLoading(true);
+        setCorrectAnswer(""); // Reset odpowiedzi
+        updateIsClicked(false); // Zaktualizuj stan kliknięcia
+        setCurrQuestion(["", "", "", "", ""]); // Reset aktualnego pytania
+  
+        // Emituj zdarzenie GET_REQ_QUESTION, gdy status jest prawdziwy
+        console.log("Emitting GET_REQ_QUESTION");
+        socket.emit("GET_REQ_QUESTION", room_id);
+      }
+    };
+  
+    // Rejestrowanie nasłuchiwacza zdarzeń
+    socket.on("PUT_RES_CHECK_IF_ALL_ANSWERED", handlePutResCheckIfAllAnswered);
+  
+    // Czyszczenie nasłuchiwacza przy odmontowywaniu komponentu
+    return () => {
+      socket.off("PUT_RES_CHECK_IF_ALL_ANSWERED", handlePutResCheckIfAllAnswered);
+    };
+  }, [socket, room_id, setIsLoading, setCorrectAnswer, updateIsClicked, setCurrQuestion]);
   
 
   useEffect(() => {
@@ -134,6 +131,9 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ room_id_ }) => {
         console.log("correctAnswer: ", data.correctAnswer);
       });
     }
+
+
+
   }, [questionName])
 
   useEffect(() => {

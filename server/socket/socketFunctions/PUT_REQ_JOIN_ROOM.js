@@ -2,7 +2,7 @@ const db = require("../../db/firebase");
 
 function PUT_REQ_JOIN_ROOM(socket, io) {
   socket.on("PUT_REQ_JOIN_ROOM", async (data) => {
-    console.log("DATA: ", data)
+    console.log("===PUT_REQ_JOIN_ROOM===");
     const real_player_id = data.user_id;
     const room_id = data.room_id;
 

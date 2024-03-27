@@ -10,7 +10,7 @@ import { roomContext } from "@/app/context/roomContext";
 
 export default function Page({ params }: { params: { id: string } }) {
   const { room_id, SetRoomID } = roomContext();
-  const {socket, connectToSocket} = UserSocket();
+  const {socket} = UserSocket();
   const {userName, setUserNameFunction} = userNameContext();
   const [error, setError] = useState(false);
   //room id is in link
@@ -19,7 +19,6 @@ export default function Page({ params }: { params: { id: string } }) {
     console.log(params.id)
 
     if(socket == null){
-      connectToSocket();
       //we should give a nickname also
     }
 
