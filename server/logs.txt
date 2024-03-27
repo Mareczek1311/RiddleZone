@@ -1,3 +1,10 @@
+there is some problem with switching questions, all of those delays are starting wrong and for ex. they both are skipping questions. we need to have some sort of status in room of current question
+
+
+
+
+
+
 /Users/mareczek131/code/projects/RiddleZone/server/socket/socketFunctions/GET_REQ_QUESTION.js:65
       const iscurrentQuestion = doc2.data().currentQuestion; 
                                            ^

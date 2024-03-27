@@ -3,7 +3,7 @@
 import { UserSocket } from "@/app/context/socketContext";
 import "./QuestionPage.css";
 import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { roomContext } from "@/app/context/roomContext";
 import { set } from "firebase/database";
 import { Loading } from "@/app/components/Loading/Loading";
@@ -52,15 +52,26 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ room_id_ }) => {
   }
 
   useEffect(() => {
+    
     console.log("room_id: ", room_id);
     socket.emit("GET_REQ_ROOM_INFO", room_id);
     socket.on("GET_RES_ROOM_INFO", (data: any) => {
       // we can optimise that
       setIsAdmin(data.users[socket.id].isAdmin);
 
+      console.log("GET_REQ_QUESTION", data);
       socket.emit("GET_REQ_QUESTION", room_id);
+
     });
+
+    return () => {
+      socket.off("GET_RES_ROOM_INFO");
+      socket.off("GET_REQ_QUESTION")
+    }
+
   }, []);
+
+
 
   useEffect(() => {
     socket.on("GET_RES_QUESTION", (data: any) => {
@@ -76,16 +87,43 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ room_id_ }) => {
       setIsLoading(false);
     });
 
-    socket.on("PUT_RES_CHECK_IF_ALL_ANSWERED", (status: boolean) => {
-      if (status == true) {
-        setIsLoading(true);
-        setCorrectAnswer("");
-        updateIsClicked(false);
-        setCurrQuestion(["", "", "", "", ""]);
-        socket.emit("GET_REQ_QUESTION", room_id);
-      }
-    });
+    return () => socket.off("GET_RES_QUESTION");
+    
   }, [socket]);
+
+  const myEventHandler = useCallback((status: boolean) => {
+    console.log(status); // Poprawnie loguje wartość `status`
+    if (status) { // Porównanie `status == true` jest zbędne, można użyć po prostu `status`
+      setIsLoading(true);
+      setCorrectAnswer(""); // Zakładam, że resetujesz odpowiedź na pustą wartość
+      updateIsClicked(false); // Zakładam, że zmieniasz stan na `false`
+      setCurrQuestion(["", "", "", "", ""]); // Resetujesz aktualne pytanie na puste wartości
+  
+      console.log("GET_REQ_QUESTION")
+      socket.emit("GET_REQ_QUESTION", room_id); // Wysyłasz zdarzenie socketowe, zakładam, że `room_id` jest zdefiniowane
+    } 
+
+
+    return () => {
+      socket.off("PUT_RES_CHECK_IF_ALL_ANSWERED", myEventHandler)
+      socket.off("GET_RES_QUESTION")
+      socket.off("GET_RES_ROOM_INFO")
+      console.log("GET_REQ_QUESTION")
+      socket.off("GET_REQ_QUESTION")
+  };
+
+  }, [setIsLoading, setCorrectAnswer, updateIsClicked, setCurrQuestion, socket, room_id]); // Dodaj wszystkie zależności tutaj
+  
+
+  useEffect(() => {
+    socket.on("PUT_RES_CHECK_IF_ALL_ANSWERED", myEventHandler);
+
+    return () => socket.off("PUT_RES_CHECK_IF_ALL_ANSWERED", myEventHandler);
+
+  }
+
+  , [socket]);
+  
 
   useEffect(() => {
     if(isAdmin && questionName != ""){

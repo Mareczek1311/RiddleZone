@@ -1,7 +1,7 @@
 const db = require("../../db/firebase");
 
-function PUT_REQ_CHECK_IF_ALL_ANSWERED(socket, io) {
-  socket.on("PUT_REQ_CHECK_IF_ALL_ANSWERED", async (room_id) => {
+const fun = async (socket, room_id, io) => 
+  {
     console.log("===PUT_REQ_CHECK_IF_ALL_ANSWERED===");
 
     const docRef = db.collection("rooms").doc(room_id).collection("players");
@@ -32,12 +32,13 @@ function PUT_REQ_CHECK_IF_ALL_ANSWERED(socket, io) {
 
 
         //wait for 3 seconds
-        setTimeout(() => {
-            io.to(room_id).emit("PUT_RES_CHECK_IF_ALL_ANSWERED", allAnswered);
-        }, 3000);
+      io.timeout(3000).to(room_id).emit("PUT_RES_CHECK_IF_ALL_ANSWERED", allAnswered);
     }
 
-  });
+  }
+
+function PUT_REQ_CHECK_IF_ALL_ANSWERED(socket, io) {
+  socket.off("PUT_REQ_CHECK_IF_ALL_ANSWERED", (room_id) => fun(socket, room_id, io)).on("PUT_REQ_CHECK_IF_ALL_ANSWERED", (room_id) => fun(socket, room_id, io));
 }
 
 module.exports = PUT_REQ_CHECK_IF_ALL_ANSWERED;

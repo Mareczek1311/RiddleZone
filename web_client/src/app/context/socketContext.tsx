@@ -7,30 +7,21 @@ const socketContext = createContext(null);
 export const SocketContextProvider = ({ children } : any) => {
 
     const [socket, setSocket] = useState(null);
-    
-    function connectToSocket() {
-        if(socket != null) {
-            return socket;
-        }
-        const newSocket = io("http://localhost:3001");
-        setSocket(newSocket);
-        return newSocket;
+
+    useEffect(() => {
+      if(socket == null){
+      console.log("Connecting to socket");
+      var sockett = io("http://localhost:3001");
+
+        setSocket(sockett);
+      return () => {
+        sockett.disconnect();
+      };
     }
+  
+  }, []);
 
-    useEffect(() => {
-        connectToSocket();
-    }, []);
-
-    useEffect(() => {
-        // Na unmountu komponentu rozłączamy socket
-        return () => {
-          if (socket != null) {
-            socket.disconnect();
-          }
-        };
-      }, []);
-
-    return <socketContext.Provider value={{socket, connectToSocket}}>{children}</socketContext.Provider>;
+    return <socketContext.Provider value={{socket}}>{children}</socketContext.Provider>;
 }
 
 export const UserSocket = () => {

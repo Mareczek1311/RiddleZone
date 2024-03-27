@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -16,7 +16,6 @@ export const metadata: Metadata = {
 };
 */ ///WHYYYY
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -24,15 +23,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <RoomContextProvider>
-        <UserNameContextProvider>
-          <AuthContextProvider >
-            <SocketContextProvider>
+      <SocketContextProvider>
+        <RoomContextProvider>
+          <UserNameContextProvider>
+            <AuthContextProvider>
               <body className={inter.className}>{children}</body>
-            </SocketContextProvider>
-          </AuthContextProvider>
-        </UserNameContextProvider>
-      </RoomContextProvider>
+            </AuthContextProvider>
+          </UserNameContextProvider>
+        </RoomContextProvider>
+      </SocketContextProvider>
     </html>
   );
 }

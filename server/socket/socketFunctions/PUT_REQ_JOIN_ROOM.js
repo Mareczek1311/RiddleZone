@@ -46,7 +46,7 @@ function PUT_REQ_JOIN_ROOM(socket, io) {
 
    
     if (isEmpty) {
-      docRef
+      await docRef
       .set({
         isAdmin: true,
         isReady: true,
@@ -56,7 +56,7 @@ function PUT_REQ_JOIN_ROOM(socket, io) {
       })
     }
     else{
-      docRef
+      await docRef
       .set({
         isAdmin: false,
         isReady: false,

@@ -11,7 +11,7 @@ import { roomContext } from "@/app/context/roomContext";
 const LoginPage = () => {
   const [ready, setReady] = useState(false);
 
-  const { socket, connectToSocket } = UserSocket();
+  const { socket } = UserSocket();
   const [playerSet, setPlayerSet] = useState({});
   const [readyCounter, setReadyCounter] = useState(0);
   const [started, setStarted] = useState(false);
@@ -47,6 +47,9 @@ const LoginPage = () => {
       });
       setReadyCounter(readyCount);
     });
+
+    return () => {}
+
   }, []);
 
   useEffect(() => {

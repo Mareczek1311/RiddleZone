@@ -25,11 +25,18 @@ export default function Menu() {
   }, [user]);
 
   useEffect(() => {
+    console.log("GET_REQ_quizzies")
     socket.emit("GET_REQ_quizzies", user.uid);
-    socket.on("GET_RES_quizzies", (data: any) => {
+    const handleQuizzes = (data: any) => {
       console.log("GET_RES_quizzies", data);
       setMyQuizies(data);
-    });
+    };
+    socket.on("GET_RES_quizzies", handleQuizzes);
+  
+    // Funkcja czyszcząca
+    return () => {
+      socket.off("GET_RES_quizzies", handleQuizzes);
+    };
   }, []);
 
   useEffect(() =>{
